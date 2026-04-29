@@ -1,0 +1,25 @@
+{
+  "name": "hono",
+  "type": "module",
+  "imports": {
+    "src/*": "./src/*"
+  },
+  "dependencies": {
+    "@hono/zod-validator": "0.7.6",
+    "hono": "^4.12.14",
+    "pg": "8.20.0",
+    "pg-hstore": "2.3.4",
+    "pino": "10.3.1",
+    "reflect-metadata": "0.2.2",
+    "sequelize": "6.37.8",
+    "sequelize-typescript": "2.1.6",
+    "zod": "4.3.6"
+  },
+  "devDependencies": {
+    "@types/node": "^25.6.0",
+    "@types/pg": "8.20.0",
+    "@types/validator": "13.15.10",
+    "tsx": "^4.7.1",
+    "typescript": "^5.8.3"
+  }
+}
