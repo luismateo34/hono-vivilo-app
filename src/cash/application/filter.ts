@@ -7,6 +7,7 @@ const cashFilter = z.object({
   balance: z.number().nonnegative(),
   date: z.date(),
   id_amount: z.number(),
+  currency: z.enum(Currency)
 });
 //------------------------
 const dateFilter = z.object({
@@ -21,4 +22,25 @@ const numberFilter = z.object({
 const currencyFilter = z.object({
   currency: z.enum(Currency).optional(),
 });
-export { numberFilter, cashFilter, dateFilter, currencyFilter };
+
+const updateRevenue = z.object({
+  date: z.date(),
+  currency: z.enum(Currency).optional(),
+  revenue: z.number().nonnegative(),
+})
+
+
+const updateExpense = z.object({
+  date: z.date(),
+  currency: z.enum(Currency).optional(),
+  expense: z.number().nonnegative(),
+})
+
+//----------------
+const updateCash = z.object({
+  date: z.date(),
+  currency: z.enum(Currency).optional(),
+  balance: z.number().nonnegative(),
+})
+
+export { numberFilter, cashFilter, dateFilter, currencyFilter, updateCash, updateExpense, updateRevenue };

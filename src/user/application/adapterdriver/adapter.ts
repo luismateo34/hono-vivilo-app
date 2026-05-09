@@ -6,6 +6,7 @@ import { DeleteUserAdapter } from "./method/delete";
 import { updateUserAdapter } from "./method/update";
 import { createUser, getUser, ErrorUser, Payments } from "../../domain/user";
 import { comparePassword } from "src/utils/criptUtils";
+import { Loggin } from "src/user/application/filter";
 
 //-------------------------
 export class UserAdapter implements FacadesUser {
@@ -60,6 +61,10 @@ export class UserAdapter implements FacadesUser {
   //-------------------------
   async login(email: string, password: string): Promise<getUser | ErrorUser> {
     try {
+      Loggin.parse({
+        email: email,
+        password: password,
+      })
       const resp = await this.userDriven.loggin(email);
       //---------------
       if (resp === null) {

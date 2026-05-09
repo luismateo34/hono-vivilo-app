@@ -1,5 +1,4 @@
 import { sign } from "hono/jwt";
-import { CreateAdmin } from "src/admin/application/filter";
 import { jwtAdminPayload } from "./Adminservice";
 
 export const generateToken = async (adminId: number, name: string) => {

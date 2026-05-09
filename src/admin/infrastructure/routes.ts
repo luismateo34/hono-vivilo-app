@@ -1,8 +1,12 @@
 import { Hono } from "hono";
-import { setCookie } from "hono/cookie";
+import { setCookie, deleteCookie } from "hono/cookie";
 import { zValidator } from "@hono/zod-validator";
 import { jwt } from "hono/jwt";
-import { CreateAdmin, UpdateAdmin, Id_admin } from "src/admin/application/filter";
+import {
+  CreateAdmin,
+  UpdateAdmin,
+  Id_admin,
+} from "src/admin/application/filter";
 import {
   AdminService,
   adminCookies,
@@ -15,7 +19,9 @@ type Variables = {
   jwtPayload: jwtAdminPayload;
 };
 //------------------
-const AdminRoutes = new Hono<{ Variables: Variables }>().basePath("/admin");
+export const AdminRoutes = new Hono<{ Variables: Variables }>().basePath(
+  "/admin",
+);
 AdminRoutes.post(
   "/create",
   jwt({
@@ -47,8 +53,8 @@ AdminRoutes.get(
   }),
   async (c) => {
     try {
-      const id = c.req.param("id")
-      if ( id === undefined){
+      const id = c.req.param("id");
+      if (id === undefined) {
         return c.json({ message: "no se pudo buscar el admin" }, 400);
       }
       const numID = parseInt(id);
@@ -56,7 +62,7 @@ AdminRoutes.get(
       if (!resp) {
         return c.json({ message: "no se pudo borrar el admin" }, 400);
       }
-      return c.json({ message:"ok"}, 200);
+      return c.json({ message: "ok" }, 200);
     } catch {
       return c.json({ message: "no se pudo borrar el admin" }, 403);
     }
@@ -72,15 +78,15 @@ AdminRoutes.get(
   }),
   async (c) => {
     try {
-      const email = c.req.query("email")
-      if ( email === undefined){
+      const email = c.req.query("email");
+      if (email === undefined) {
         return c.json({ message: "no se pudo encontrar el admin" }, 400);
       }
       const resp = await AdminService.find_byEmail(email);
       if (!resp) {
         return c.json({ message: "no se pudo borrar el admin" }, 400);
       }
-      return c.json({ message:"ok"}, 200);
+      return c.json({ message: "ok" }, 200);
     } catch {
       return c.json({ message: "no se pudo borrar el admin" }, 403);
     }
@@ -103,7 +109,7 @@ AdminRoutes.delete(
       if (!resp) {
         return c.json({ message: "no se pudo borrar el admin" }, 400);
       }
-      return c.json({ message:"ok"}, 200);
+      return c.json({ message: "ok" }, 200);
     } catch {
       return c.json({ message: "no se pudo borrar el admin" }, 403);
     }
@@ -167,6 +173,13 @@ AdminRoutes.post("/login", zValidator("json", CreateAdmin), async (c) => {
   }
 });
 //----------------------------------
+AdminRoutes.post("/logout", async (c) => {
+  deleteCookie(c, adminCookies.refreshAdmin);
+  deleteCookie(c, adminCookies.adminCookie);
+
+  return c.json({ message: "se ha cerrado la sesion" }, 200);
+});
+//------------------------------------
 AdminRoutes.post(
   "/refresh",
   jwt({

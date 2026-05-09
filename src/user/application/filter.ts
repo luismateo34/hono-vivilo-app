@@ -19,6 +19,11 @@ export const Namefilter = z.object({
 })
 
 //----------------
+export const Loggin = z.object({
+  email: z.email(),
+  password: z.string().min(8),
+})
+//----------------
 export const emailfilter = z.object({
   email: z.email()
 })

@@ -5,6 +5,9 @@ import {
   dateFilter,
   currencyFilter,
   numberFilter,
+  updateCash,
+  updateExpense,
+  updateRevenue
 } from "src/cash/application/filter";
 import pino from "pino";
 
@@ -16,9 +19,11 @@ export class updateCashAdapter implements UpdateCash {
     currency_type?: Currency,
   ): Promise<true | ErrorCash> {
     try {
-      dateFilter.parse({ date: date });
-      currencyFilter.parse({ currency: currency_type });
-      numberFilter.parse({ number: balance });
+      updateCash.parse({
+        date: date,
+        currency: currency_type,
+        balance: balance,
+      });
       const resp = await this.dataquery.update_balance(
         balance,
         date,
@@ -41,9 +46,11 @@ export class updateCashAdapter implements UpdateCash {
     currency_type?: Currency,
   ): Promise<true | ErrorCash> {
     try {
-      dateFilter.parse({ date: date });
-      currencyFilter.parse({ currency: currency_type });
-      numberFilter.parse({ number: expense });
+      updateExpense.parse({
+        date: date,
+        currency: currency_type,
+        number: expense,
+      });
 
       const resp = await this.dataquery.update_expense(
         expense,
@@ -70,7 +77,7 @@ export class updateCashAdapter implements UpdateCash {
       dateFilter.parse({ date: date });
       currencyFilter.parse({ currency: currency_type });
       numberFilter.parse({ number: revenue });
-
+      updateRevenue.parse({ date: date, currency: currency_type, revenue: revenue });
       const resp = await this.dataquery.update_revenue(
         revenue,
         date,

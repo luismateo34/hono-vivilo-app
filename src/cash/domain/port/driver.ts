@@ -6,8 +6,8 @@ import type {
 } from "src/cash/domain/cash";
 
 export interface CreateCash {
-  create(cashObj: CashCreate ): Promise<true | ErrorCash>;
-  }
+  create(cashObj: CashCreate): Promise<true | ErrorCash>;
+}
 //---------------------------
 export interface UpdateCash {
   update_revenue(
@@ -25,7 +25,7 @@ export interface UpdateCash {
     date: Date,
     currency_type?: Currency,
   ): Promise<true | ErrorCash>;
-  }
+}
 //--------------------------
 export interface findCash {
   find_byDate(date: Date, currency_type?: Currency): Promise<Cash | ErrorCash>;
