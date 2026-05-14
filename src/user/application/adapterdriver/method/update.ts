@@ -3,9 +3,9 @@ import type { Update } from "src/user/domain/port/userdriver";
 import type { dataqueryUser } from "src/user/domain/port/driven_user";
 import {
   emailfilter,
-  numberfilter,
-  createUserfilter,
-  Passwordfilter,
+  updatePassword,
+  updateUser,
+  updateEmail,
 } from "src/user/application/filter";
 import { hashPassword } from "src/utils/criptUtils";
 
@@ -27,8 +27,10 @@ export class updateUserAdapter implements Update {
     userId: number,
   ): Promise<getUser | ErrorUser> {
     try {
-      emailfilter.parse({ email });
-      numberfilter.parse({ number: userId });
+      updateEmail.parse({
+        email: email,
+        userId: userId,
+      });
       const resp = await this.database.updateEmail(email, userId);
       //----------------------
       if (resp === null) {
@@ -48,8 +50,7 @@ export class updateUserAdapter implements Update {
     userId: number,
   ): Promise<getUser | ErrorUser> {
     try {
-      numberfilter.parse({ number: userId });
-      Passwordfilter.parse({ password });
+      updatePassword.parse({ userId: userId, password: password });
       const hashedPass = await hashPassword(password);
       const resp = await this.database.updatePassword(hashedPass, userId);
       //----------------------
@@ -69,8 +70,8 @@ export class updateUserAdapter implements Update {
     userId: number,
   ): Promise<getUser | ErrorUser> {
     try {
-      numberfilter.parse({ number: userId });
-      createUserfilter.parse(user);
+      const obj: createUser & { userId: number } = { ...user, userId: userId };
+      updateUser.parse(obj);
       //-------------------------
       const hashedPass = await hashPassword(user.password);
       const updateObj: createUser = { ...user, password: hashedPass };
