@@ -9,12 +9,12 @@ const logger = pino({
 });
 
 export class DotenvObj {
-  super() {
+  private constructor() {
     this.init();
   }
   //-------------------
   private init() {
-    if (process.env.NODE_ENV !== "production") {
+    if (process.env.NODE_ENV === "development") {
       try {
         loadEnvFile("./.env");
         logger.info("✅ Variables de entorno cargadas desde .env");

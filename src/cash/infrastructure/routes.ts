@@ -3,11 +3,9 @@ import { zValidator } from "@hono/zod-validator";
 import { jwt } from "hono/jwt";
 import {
   cashFilter,
-  currencyFilter,
-  numberFilter,
   updateCash,
   updateExpense,
-  updateRevenue
+  updateRevenue,
 } from "src/cash/application/filter";
 import {
   adminCookies,
@@ -119,7 +117,11 @@ CashRoutes.put(
   zValidator("json", updateRevenue),
   async (c) => {
     const cash = c.req.valid("json");
-    const getamount = await AmountService.update_revenue(cash.revenue, cash.date, cash.currency);
+    const getamount = await AmountService.update_revenue(
+      cash.revenue,
+      cash.date,
+      cash.currency,
+    );
     if (getamount instanceof ErrorCash) {
       const message = getamount.messageError;
       return c.json({ message }, 400);
@@ -138,7 +140,11 @@ CashRoutes.put(
   zValidator("json", updateExpense),
   async (c) => {
     const cash = c.req.valid("json");
-    const getamount = await AmountService.update_expense(cash.expense, cash.date, cash.currency);
+    const getamount = await AmountService.update_expense(
+      cash.expense,
+      cash.date,
+      cash.currency,
+    );
     if (getamount instanceof ErrorCash) {
       const message = getamount.messageError;
       return c.json({ message }, 400);
@@ -156,7 +162,11 @@ CashRoutes.put(
   zValidator("json", updateCash),
   async (c) => {
     const cash = c.req.valid("json");
-    const getamount = await AmountService.update_balance(cash.balance, cash.date, cash.currency);
+    const getamount = await AmountService.update_balance(
+      cash.balance,
+      cash.date,
+      cash.currency,
+    );
     if (getamount instanceof ErrorCash) {
       const message = getamount.messageError;
       return c.json({ message }, 400);
