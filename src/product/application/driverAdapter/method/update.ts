@@ -3,10 +3,11 @@ import { dataqueryProduct } from "src/product/domain/port/driven_product";
 import { ErrorProduct, Product } from "src/product/domain/product";
 import {
   numberfilter,
-  productFilter,
-  offertFilter,
-  arrUrl,
-  offertPercentfilter
+  updateProductFilter,
+  offertPercentfilter,
+  changecuantityFilter,
+  changePriceFilter,
+  changeImage
 } from "src/product/application/filter";
 
 //----------------------------------------
@@ -18,8 +19,7 @@ export class UpdateProductAdapter implements updateProduct {
     imageArr: string[],
   ): Promise<Product | ErrorProduct> {
     try {
-      arrUrl.parse({ imagesUrl: imageArr });
-      numberfilter.parse({ number: productId });
+      changeImage.parse({productId, imageArr})
       const resp = await this.driver.changeImages(productId, imageArr);
       if (typeof resp === "boolean" && !resp) {
         throw new Error("error al cambiar las imagenes");
@@ -37,10 +37,7 @@ export class UpdateProductAdapter implements updateProduct {
     offertPercent: number,
   ): Promise<Product | ErrorProduct> {
     try {
-      offertFilter.parse({ boolean: offert });
-      numberfilter.parse({ number: productId });
-      numberfilter.parse({ number: offertPercent });
-      offertPercentfilter.parse({ offertPercent: offertPercent })
+      offertPercentfilter.parse({ offertPercent: offertPercent });
       const resp = await this.driver.changeOffert(
         productId,
         offert,
@@ -61,11 +58,7 @@ export class UpdateProductAdapter implements updateProduct {
     price: number,
   ): Promise<Product | ErrorProduct> {
     try {
-      const filterproduct = numberfilter.safeParse({ number: productId });
-      const filterprice = numberfilter.safeParse({ number: price });
-      if (!filterprice.success || filterproduct.success) {
-        return new ErrorProduct("error, parametros no validos");
-      }
+      changePriceFilter.parse({productId, price})
       const resp = await this.driver.changePrice(productId, price);
       if (typeof resp === "boolean" && !resp) {
         throw new Error("error al cambiar el precio");
@@ -82,11 +75,7 @@ export class UpdateProductAdapter implements updateProduct {
     quantity: number,
   ): Promise<Product | ErrorProduct> {
     try {
-      const filterId = numberfilter.safeParse({ number: productId });
-      const filterquantity = numberfilter.safeParse({ number: quantity });
-      if (!filterquantity.success || !filterId.success) {
-        return new ErrorProduct("error, parametros no validos");
-      }
+      changecuantityFilter.parse({productId, quantity})
       const resp = await this.driver.changeQuantity(productId, quantity);
       if (typeof resp === "boolean" && !resp) {
         throw new Error("error al cambiar la cantidad");
@@ -103,11 +92,8 @@ export class UpdateProductAdapter implements updateProduct {
     productObj: Product,
   ): Promise<Product | ErrorProduct> {
     try {
-      const filterId = numberfilter.safeParse({ number: productId });
-      const filterproduct = productFilter.safeParse(productFilter);
-      if (!filterproduct.success || !filterId.success) {
-        throw new Error("error, parametros no validos");
-      }
+      numberfilter.parse({ number: productId });
+      updateProductFilter.parse({ ...productObj });
       const resp = await this.driver.updateProduct(productId, productObj);
       if (typeof resp === "boolean" && !resp) {
         throw new Error("error al actualizar el producto");

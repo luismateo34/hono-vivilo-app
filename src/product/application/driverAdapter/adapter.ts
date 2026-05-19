@@ -31,8 +31,8 @@ export class AdapterProduct implements facadeProduct {
       return this.classupdate.changeOffert(productId, offert, offertPercent)
   }
   //---------------------
-  async findby_category(category: Category): Promise<Product[] | ErrorProduct> {
-      return this.classfind.findby_category(category)
+  async findby_category(category: Category, row?: number): Promise<Product[] | ErrorProduct> {
+      return this.classfind.findby_category(category, row)
   }
   //---------------------
   async changePrice(

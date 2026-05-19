@@ -1,7 +1,7 @@
-import {Category } from "src/product/domain/product";
+import { Category } from "src/product/domain/product";
 import * as z from "zod";
 
-const productFilter = z.object({
+export const productFilter = z.object({
   name: z.string().min(3),
   description: z.string().min(3),
   price: z.number().nonnegative(),
@@ -10,35 +10,85 @@ const productFilter = z.object({
   categoryproduct: z.enum(Category),
   offert: z.boolean(),
   offertPercent: z.number().nonnegative().max(100).min(0),
-
 });
-const categoryFilter = z.object({
+//----------
+export const categoryFilter = z.object({
   categoryproduct: z.enum(Category),
-})
+});
 //------------
-  const nameFilter = z.object({
+export const nameFilter = z.object({
   name: z.string().min(3),
 });
-const descriptionFilter = z.object({
+//----------
+export const descriptionFilter = z.object({
   description: z.string().min(3),
 });
-const priceFilter = z.object({
+//----------
+export const priceFilter = z.object({
   price: z.number().min(0).nonnegative(),
 });
-const numberfilter = z.object({
+//----------
+export const numberfilter = z.object({
   number: z.number().min(0).nonnegative(),
 });
-const rowfilter = z.object({
+//----------
+export const rowfilter = z.object({
   number: z.number().nonnegative().min(0).optional(),
 });
-const offertFilter = z.object({
+//----------
+export const offertFilter = z.object({
   boolean: z.boolean(),
-})
-const arrUrl = z.object({
+});
+//----------
+export const arrUrl = z.object({
   imagesUrl: z.string().array().optional(),
-})
-const offertPercentfilter = z.object({
+});
+//----------
+export const offertPercentfilter = z.object({
   offertPercent: z.number().nonnegative().max(100).min(0),
-})
+});
 
-export { offertPercentfilter ,arrUrl ,offertFilter ,rowfilter ,productFilter, nameFilter, descriptionFilter, priceFilter, numberfilter, categoryFilter };
+//----------
+/*
+  name: string;
+  description: string;
+  price: number;
+  quantity: number;
+  imagesUrl:string[];
+  categoryproduct: Category;
+  offert: boolean;
+  offertPercent: number;
+  productId: number;
+ */
+export const updateProductFilter = z.object({
+  name: z.string().min(3),
+  description: z.string().min(3),
+  price: z.number().nonnegative(),
+  quantity: z.number().nonnegative(),
+  imagesUrl: z.string().array(),
+  categoryproduct: z.enum(Category),
+  offert: z.boolean(),
+  offertPercent: z.number().nonnegative().max(100).min(0),
+  productId: z.number().nonnegative(),
+});
+//----------
+export const changecuantityFilter = z.object({
+  productId: z.number().min(0).nonnegative(),
+  quantity: z.number().min(0).nonnegative(),
+});
+//----------
+export const changePriceFilter = z.object({
+  productId: z.number().min(0).nonnegative(),
+  price: z.number().min(0).nonnegative(),
+});
+//----------
+export const changeOffertFilter = z.object({
+  productId: z.number().min(0).nonnegative(),
+  offert: z.boolean(),
+  offertPercent: z.number().nonnegative().max(100).min(0),
+});
+//----------
+export const changeImage = z.object({
+  productId: z.number().min(0).nonnegative(),
+  imageArr: z.string().array(),
+});
