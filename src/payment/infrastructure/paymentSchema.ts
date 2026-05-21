@@ -23,11 +23,9 @@ export class PaymentSchema extends Model implements PaymentModel {
   date!: Date;
   //-----------
   @PrimaryKey
-  @Column({ type: DataType.INTEGER, allowNull: false, autoIncrement: true })
-  id_payment!: number;
+  @Column({ type: DataType.STRING, allowNull: false, unique:true })
+  id_payment!: string;
   //-----------
-  @Column({ type: DataType.ARRAY(DataType.INTEGER) })
-  productsId!: number[];
   //-----------
   @Column({ type: DataType.BOOLEAN })
   shipping!: boolean;
@@ -43,6 +41,6 @@ export class PaymentSchema extends Model implements PaymentModel {
   user!: UserSchema;
   //-------------
   @BelongsToMany(() => Productschema, () => Product_to_payments)
-  products!: Productschema;
+  products!: [Productschema];
 }
 seqlize.addModels([PaymentSchema]);

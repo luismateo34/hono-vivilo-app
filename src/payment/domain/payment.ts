@@ -7,7 +7,7 @@ export enum Status {
 export interface Payment {
   amount: number;
   date: Date;
-  id_payment: number;
+  id_payment: string;
   user_id: number;
   user_email: string;
   user_name: string;
@@ -15,7 +15,7 @@ export interface Payment {
   productsId: number[];
   shipping: boolean;
 }
-export type PaymentModel = Omit<Payment, "user_name" | "user_email">;
+export type PaymentModel = Omit<Payment, "user_name" | "user_email" | "productsId">;
 export interface product_payment {
   productid: number;
   name: string;

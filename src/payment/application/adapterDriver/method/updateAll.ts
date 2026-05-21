@@ -1,7 +1,7 @@
 import { ErrorPayment, Payment } from "src/payment/domain/payment";
 import { UpdatePayment } from "src/payment/domain/port/diver";
 import { dataqueryPayment } from "src/payment/domain/port/driven_payment";
-import { paymentFilter, numberparce, booleanParce } from "src/payment/application/filter";
+import { paymentFilter,  updateShippingFilter } from "src/payment/application/filter";
 import { ZodError } from "zod";
 
 export class UpdateAllAdapter implements UpdatePayment {
@@ -12,8 +12,7 @@ export class UpdateAllAdapter implements UpdatePayment {
     id: number,
   ): Promise<Payment | ErrorPayment> {
     try {
-      booleanParce.parse({shipping: shipping});
-      numberparce.parse({number: id});
+      updateShippingFilter.parse({ shipping: shipping, id: id })
       const result = await this.paymentRepository.updateShipping(shipping, id);
       if (typeof result === "boolean" && !result) {
         throw new Error("error al actualizar el pago");

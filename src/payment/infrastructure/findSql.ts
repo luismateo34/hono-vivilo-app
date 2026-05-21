@@ -27,16 +27,22 @@ type findSql = Pick<
 
 export class FindPayment implements findSql {
   //------------------
-  async sells_list(initdate: Date, finalDate:Date): Promise<product_sell[] | null>{
-      const resp = await GroupBy(initdate, finalDate)
-       return resp
+  async sells_list(
+    initdate: Date,
+    finalDate: Date,
+  ): Promise<product_sell[] | null> {
+    const resp = await GroupBy(initdate, finalDate);
+    return resp;
   }
   //------------------
   async getby_User_id(id_user: number): Promise<Payment[] | null> {
     try {
       const resp = await PaymentSchema.findAll({
         where: { user_id: id_user },
-        include: { model: UserSchema, required: true },
+        include: [
+          { model: UserSchema, required: true },
+          { model: Productschema, required: true },
+        ],
       });
       if (resp.length === 0) {
         return null;
@@ -47,16 +53,16 @@ export class FindPayment implements findSql {
           amount,
           date,
           id_payment,
-          productsId,
           shipping,
           user_id,
           user,
+          products,
         } = el;
         const obj: Payment = {
           amount,
           date,
           id_payment,
-          productsId,
+          productsId: products.map((el) => el.productId),
           shipping,
           status,
           user_email: user.email,
@@ -82,12 +88,15 @@ export class FindPayment implements findSql {
   ): Promise<Payment[] | null> {
     try {
       const resp = await PaymentSchema.findAll({
-        include: {
-          model: UserSchema,
-          required: true,
-          attributes: ["name", "email"],
-          where: { name: name, email: email },
-        },
+        include: [
+          {
+            model: UserSchema,
+            required: true,
+            attributes: ["name", "email"],
+            where: { name: name, email: email },
+          },
+          { model: Productschema, required: true },
+        ],
         where: { date: { [Op.between]: [initdate, finishdate] } },
       });
       if (resp.length === 0) {
@@ -101,14 +110,14 @@ export class FindPayment implements findSql {
           user_id,
           shipping,
           status,
-          productsId,
           user,
+          products,
         } = el;
         const paymentObj: Payment = {
           amount,
           date,
           id_payment,
-          productsId,
+          productsId: products.map((el) => el.productId),
           shipping,
           status,
           user_id,
@@ -135,6 +144,7 @@ export class FindPayment implements findSql {
     try {
       const resp = await PaymentSchema.findAll({
         where: { date: { [Op.between]: [initdate, finishdate] } },
+        include: { model: Productschema, required: true },
       });
       if (resp.length === 0) {
         return null;
@@ -147,14 +157,14 @@ export class FindPayment implements findSql {
           user_id,
           shipping,
           status,
-          productsId,
           user,
+          products,
         } = el;
         const paymentObj: Payment = {
           amount,
           date,
           id_payment,
-          productsId,
+          productsId: products.map((el) => el.productId),
           shipping,
           status,
           user_id,
@@ -176,6 +186,7 @@ export class FindPayment implements findSql {
     try {
       const resp = await PaymentSchema.findOne({
         where: { id_payment: id_payment },
+        include: { model: Productschema, required: true },
       });
       if (resp === null) {
         return null;
@@ -184,7 +195,7 @@ export class FindPayment implements findSql {
         amount: resp.amount,
         date: resp.date,
         id_payment: resp.id_payment,
-        productsId: resp.productsId,
+        productsId: resp.products.map((el) => el.productId),
         shipping: resp.shipping,
         status: resp.status,
         user_id: resp.user_id,
@@ -206,9 +217,12 @@ export class FindPayment implements findSql {
   ): Promise<Payment[] | null> {
     try {
       const resp = await PaymentSchema.findAll({
-        include: {
-          where: { name: name, email: email },
-        },
+        include: [
+          {
+            where: { name: name, email: email },
+          },
+          { model: Productschema, required: true },
+        ],
       });
       if (resp.length === 0) {
         return null;
@@ -221,14 +235,14 @@ export class FindPayment implements findSql {
           user_id,
           shipping,
           status,
-          productsId,
           user,
+          products,
         } = el;
         const paymentObj: Payment = {
           amount,
           date,
           id_payment,
-          productsId,
+          productsId: products.map((el) => el.productId),
           shipping,
           status,
           user_id,
@@ -252,11 +266,14 @@ export class FindPayment implements findSql {
     try {
       const resp = await PaymentSchema.findAll({
         where: { shipping: shipping },
-        include: {
-          model: UserSchema,
-          required: true,
-          attributes: ["name", "email"],
-        },
+        include: [
+          {
+            model: UserSchema,
+            required: true,
+            attributes: ["name", "email"],
+          },
+          { model: Productschema, required: true },
+        ],
       });
       if (resp.length === 0) {
         return null;
@@ -269,14 +286,14 @@ export class FindPayment implements findSql {
           user_id,
           shipping,
           status,
-          productsId,
           user,
+          products,
         } = el;
         const paymentObj: Payment = {
           amount,
           date,
           id_payment,
-          productsId,
+          productsId: products.map((el) => el.productId),
           shipping,
           status,
           user_id,
@@ -298,36 +315,28 @@ export class FindPayment implements findSql {
   //------------------
   async findProducts(id_payment: number): Promise<product_payment[] | null> {
     try {
-      const resp = await PaymentSchema.findAll({
+      const resp = await PaymentSchema.findOne({
         where: { PaymentId: id_payment },
         include: {
           model: Productschema,
           required: true,
         },
       });
-      if (resp.length === 0) {
+      if (resp === null) {
         return null;
       }
-      const arrObj = resp.map((el) => {
-        const {
-          categoryproduct,
-          description,
-          imagesUrl,
-          name,
-          productId,
-          quantity,
-        } = el.products;
-        const products: product_payment = {
-          categoryproduct,
-          description,
-          name,
-          quantity: quantity,
-          imagesurl: imagesUrl,
-          productid: productId,
+      const Objresp = resp.products.map((el) => {
+        const products_pay: product_payment = {
+          categoryproduct: el.categoryproduct,
+          description: el.description,
+          quantity: el.quantity,
+          imagesurl: el.imagesUrl,
+          productid: el.productId,
+          name: el.name,
         };
-        return products;
+        return products_pay;
       });
-      return arrObj;
+      return Objresp;
     } catch (e) {
       const err = e as Error;
       const logs = pino().child({
@@ -342,6 +351,7 @@ export class FindPayment implements findSql {
     try {
       const resp = await PaymentSchema.findAll({
         where: { status: status },
+        include: { model: Productschema, required: true },
       });
       if (resp.length === 0) {
         return null;
@@ -351,7 +361,7 @@ export class FindPayment implements findSql {
           amount: el.amount,
           date: el.date,
           id_payment: el.id_payment,
-          productsId: el.productsId,
+          productsId: el.products.map((el) => el.productId),
           shipping: el.shipping,
           status: el.status,
           user_email: el.user.email,

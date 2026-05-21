@@ -9,45 +9,65 @@ import {
   product_sell,
 } from "src/payment/domain/payment";
 import pino from "pino";
+import { Productschema } from "src/product/infrastructure/schema";
 import { FindPayment } from "./findSql";
 
 export class databasePayment implements dataqueryPayment {
-  private findSql= new FindPayment()
+  private findSql = new FindPayment();
   //----------------------------
   async findProducts(id_payment: number): Promise<product_payment[] | null> {
-      return this.findSql.findProducts(id_payment)
+    return this.findSql.findProducts(id_payment);
   }
   //---------------------------
-  async getAll_by_UserName(name: string, email: string): Promise<Payment[] | null> {
-      return this.getAll_by_UserName(name, email)
+  async getAll_by_UserName(
+    name: string,
+    email: string,
+  ): Promise<Payment[] | null> {
+    return this.getAll_by_UserName(name, email);
   }
   //---------------------------
-  async getby_RangeDate_and_UserName(name: string, email: string, initdate: Date, finishdate: Date): Promise<Payment[] | null> {
-      return this.findSql.getby_RangeDate_and_UserName(name,email,initdate,finishdate)
+  async getby_RangeDate_and_UserName(
+    name: string,
+    email: string,
+    initdate: Date,
+    finishdate: Date,
+  ): Promise<Payment[] | null> {
+    return this.findSql.getby_RangeDate_and_UserName(
+      name,
+      email,
+      initdate,
+      finishdate,
+    );
   }
   //---------------------------
   async getby_User_id(id_user: number): Promise<Payment[] | null> {
-      return this.findSql.getby_User_id(id_user)
+    return this.findSql.getby_User_id(id_user);
   }
   //---------------------------
   async getbyId(id_payment: number): Promise<Payment | null> {
-      return this.findSql.getbyId(id_payment)
+    return this.findSql.getbyId(id_payment);
   }
   //---------------------------
-  async getbyRangeDate(initdate: Date, finishdate: Date): Promise<Payment[] | null> {
-      return this.findSql.getbyRangeDate(initdate, finishdate)
+  async getbyRangeDate(
+    initdate: Date,
+    finishdate: Date,
+  ): Promise<Payment[] | null> {
+    return this.findSql.getbyRangeDate(initdate, finishdate);
   }
   //---------------------------
   async getbyShipping(shipping: boolean): Promise<Payment[] | null> {
-      return this.findSql.getbyShipping(shipping)
+    return this.findSql.getbyShipping(shipping);
   }
   //---------------------------
   async getbyStatus(status: Status): Promise<Payment[] | null> {
-      return this.findSql.getbyStatus(status)
+    return this.findSql.getbyStatus(status);
   }
   //---------------------------
-  async sells_list(initdate: Date, finalDate: Date): Promise<product_sell[] | null> {
-      return this.findSql.sells_list(initdate, finalDate)
+  async sells_list(
+    initdate: Date,
+    finalDate: Date,
+  ): Promise<product_sell[] | null> {
+    return this.findSql.sells_list(initdate, finalDate);
   }
   //----------------------------
   async deletePayment(id_payment: number): Promise<boolean> {
@@ -66,32 +86,34 @@ export class databasePayment implements dataqueryPayment {
     try {
       const resp = await PaymentSchema.create(paymentObj, {
         returning: true,
-        include: {
-          model: UserSchema,
-          required: true,
-          attributes: ["email", "name"],
-        },
+        include: [
+          {
+            model: UserSchema,
+            required: true,
+          },
+          { model: Productschema, required: true },
+        ],
       });
       const {
         status,
         amount,
         date,
         id_payment,
-        productsId,
         shipping,
         user_id,
         user,
+        products,
       } = resp;
       const obj: Payment = {
         amount,
         date,
         id_payment,
-        productsId,
         shipping,
         status,
         user_email: user.email,
         user_id,
         user_name: user.name,
+        productsId: products.map((el) => el.productId),
       };
       return obj;
     } catch (e) {
@@ -113,16 +135,16 @@ export class databasePayment implements dataqueryPayment {
         amount,
         date,
         id_payment,
-        productsId,
         shipping,
         user_id,
         user,
+        products,
       } = resp[1][0];
       const obj: Payment = {
         amount,
         date,
         id_payment,
-        productsId,
+        productsId: products.map((el) => el.productId),
         shipping,
         status,
         user_email: user.email,
@@ -155,7 +177,7 @@ export class databasePayment implements dataqueryPayment {
         amount: resp.amount,
         date: resp.date,
         id_payment: resp.id_payment,
-        productsId: resp.productsId,
+        productsId: resp.products.map((el) => el.productId),
         shipping: resp.shipping,
         status: resp.status,
         user_id: resp.user_id,
@@ -170,7 +192,7 @@ export class databasePayment implements dataqueryPayment {
       return false;
     }
   }
-    //------------------
+  //------------------
   async updateStatus(
     status: Status,
     id_payment: number,
@@ -188,7 +210,7 @@ export class databasePayment implements dataqueryPayment {
         amount: schema.amount,
         date: schema.date,
         id_payment: schema.id_payment,
-        productsId: schema.productsId,
+        productsId: schema.products.map((el) => el.productId),
         shipping: schema.shipping,
         status: schema.status,
         user_email: schema.user.email,

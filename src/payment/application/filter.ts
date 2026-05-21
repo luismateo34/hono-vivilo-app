@@ -25,11 +25,14 @@ export const paymentFilter = z.object({
   amount: z.number().nonnegative(),
   date: z.date(),
   id_payment: z.number().nonnegative(),
-  user_id: z.number().nonnegative(),
+  user_id: z.uuidv4(),
   user_email: z.email(),
   user_name: z.string().min(3),
   productsId: z.array(z.string()),
   status: z.enum(Status),
   shipping: z.boolean(),
 });
-
+export const updateShippingFilter = z.object({
+  shipping: z.boolean(),
+  id: z.number().nonnegative()
+})
