@@ -29,6 +29,7 @@ interface driverPayment {
   updateStatus(status: Status, id_payment: number): Promise<Payment | false>;
   updateAll(paymentObj: Payment): Promise<Payment | false>;
   updateShipping(shipping: boolean, id: number): Promise<Payment | false>;
+  setPending(id_payment: number): Promise<Payment | false>;
 }
 //-----------------------
 export interface dataqueryPayment extends getdrivenPayment, driverPayment {}

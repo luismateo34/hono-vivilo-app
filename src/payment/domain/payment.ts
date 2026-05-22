@@ -2,6 +2,7 @@ export enum Status {
   PENDING = "PENDING",
   APPROVED = "APPROVED",
   REJECTED = "REJECTED",
+  UNPAID = "UNPAID",
 }
 
 export interface Payment {
@@ -29,8 +30,11 @@ export interface product_sell {
   name: string;
   total_ventas:number;
 }
-
-export type paymentCreate = Omit<Payment, "id_payment">;
+//-------------
+export type paymentCreate = Omit<Payment, "id_payment" | "status" | "shipping">;
+//-------------
+export type PaymentDB = Omit<Payment, "id_payment"  | "user_name" | "user_email" | "productsId">;
+//--------------
 export class ErrorPayment {
   constructor(private message: string) {}
   get messageError() {

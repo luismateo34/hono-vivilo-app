@@ -1,15 +1,15 @@
 import { dataqueryPayment } from "src/payment/domain/port/driven_payment";
 import { PaymentSchema } from "src/payment/infrastructure/paymentSchema";
-import { UserSchema } from "src/user/infrastructure/userSchema";
+import { seqlize } from "src/database";
 import {
   Payment,
   product_payment,
   Status,
   paymentCreate,
   product_sell,
+  PaymentDB,
 } from "src/payment/domain/payment";
 import pino from "pino";
-import { Productschema } from "src/product/infrastructure/schema";
 import { FindPayment } from "./findSql";
 
 export class databasePayment implements dataqueryPayment {
@@ -83,17 +83,34 @@ export class databasePayment implements dataqueryPayment {
   }
   //------------------
   async create(paymentObj: paymentCreate): Promise<Payment | false> {
+    const transaction = await seqlize.transaction();
+    let commited: boolean = false;
     try {
-      const resp = await PaymentSchema.create(paymentObj, {
+      const paymentsDB: PaymentDB = {
+        amount: paymentObj.amount,
+        date: paymentObj.date,
+        shipping: false,
+        status: Status.UNPAID,
+        user_id: paymentObj.user_id,
+      };
+
+      const respCreate = await PaymentSchema.create(paymentsDB, {
         returning: true,
-        include: [
-          {
-            model: UserSchema,
-            required: true,
-          },
-          { model: Productschema, required: true },
-        ],
+        transaction,
       });
+      await respCreate.$set("products", paymentObj.productsId, { transaction });
+      await transaction.commit().then(() => {
+        commited = true;
+      });
+
+      const resp = await PaymentSchema.findByPk(respCreate.id_payment, {
+        include: ["user", "products"],
+      });
+      //-----------------
+      if (resp === null) {
+        throw new Error("error al buscar el payment");
+      }
+      //-----------------
       const {
         status,
         amount,
@@ -110,16 +127,54 @@ export class databasePayment implements dataqueryPayment {
         id_payment,
         shipping,
         status,
-        user_email: user.email,
+        user_email: user.email ?? "",
         user_id,
-        user_name: user.name,
+        user_name: user.name ?? "",
         productsId: products.map((el) => el.productId),
       };
       return obj;
     } catch (e) {
+      if (!commited) {
+        await transaction.rollback();
+      }
       const err = e as Error;
       const logs = pino().child({ location: "createPayment" });
       logs.info(err.message ?? "error al crear el payment");
+      return false;
+    }
+  }
+  //------------------
+  async setPending(id_payment: number): Promise<Payment | false> {
+    try {
+      const isExist =  await this.getbyId(id_payment)
+      if ( isExist !== null ) {
+           return false
+      }
+      //-------------------------------
+      const result = await PaymentSchema.update(
+        { status: Status.PENDING },
+        { where: { id_payment: id_payment }, returning: true },
+      );
+      const resp = result[1][0];
+      const paymentObj: Payment = {
+        amount: resp.amount,
+        date: resp.date,
+        id_payment: resp.id_payment,
+        productsId: resp.products.map((el) => el.productId),
+        shipping: resp.shipping,
+        status: resp.status,
+        user_id: resp.user_id,
+        user_email: resp.user.email,
+        user_name: resp.user.name,
+      };
+      return paymentObj;
+    } catch (e) {
+      const err = e as Error;
+      const logs = pino().child({ location: "setPending" });
+      logs.info(
+        err.message ??
+          "error al actualizar es estatus de no pagado a pendiente",
+      );
       return false;
     }
   }

@@ -9,6 +9,7 @@ import type {
 //------------------------------
 export interface createPayment {
   create(paymentObj: paymentCreate): Promise<Payment | ErrorPayment>;
+  setPending(id_payment: number): Promise<Payment | ErrorPayment>;
 }
 //---------------------------
 export interface UpdatePayment {

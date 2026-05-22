@@ -8,7 +8,7 @@ const logger = pino({
   },
 });
 
-export class DotenvObj {
+class DotenvObj {
   private constructor() {
     this.init();
   }
@@ -34,3 +34,5 @@ export class DotenvObj {
     return DotenvObj.instance;
   }
 }
+DotenvObj.getInstance();
+//export default DotenvObj.getInstance();

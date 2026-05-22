@@ -24,6 +24,10 @@ export class FacedePaymentAdapter implements facedePayment {
     this.classUpdate = new UpdateAllAdapter(this.dataqueryPayment);
   }
   //------------------------------------------
+  async setPending(id_payment: number): Promise<Payment | ErrorPayment> {
+      return await this.classCreate.setPending(id_payment)
+  }
+  //------------------------------------------
    async Product_sells_list(init_time: Date, final_time: Date): Promise<product_sell[] | ErrorPayment> {
        return this.classFind.Product_sells_list(init_time, final_time)
    }
