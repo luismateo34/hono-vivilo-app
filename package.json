@@ -7,6 +7,7 @@
   "dependencies": {
     "@hono/zod-validator": "0.7.6",
     "hono": "^4.12.14",
+    "mercadopago": "3.0.0",
     "pg": "8.20.0",
     "pg-hstore": "2.3.4",
     "pino": "10.3.1",

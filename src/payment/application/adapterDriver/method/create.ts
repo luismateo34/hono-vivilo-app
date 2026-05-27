@@ -13,6 +13,9 @@ import { ZodError } from "zod";
 
 export class CreatePaymentAdapter implements createPayment {
   constructor(private readonly dataqueryPayment: dataqueryPayment) {}
+  /**
+  * crea un nuevo pago
+  * */
   async create(paymentObj: paymentCreate): Promise<Payment | ErrorPayment> {
     try {
       CreatePaymentFilter.parse(paymentObj);
@@ -30,6 +33,11 @@ export class CreatePaymentAdapter implements createPayment {
     }
   }
   //----------------
+  /**
+   * setea el estado de un pago a pendiente pendiente
+   * se usa luego de que se creo el pago
+   * en el servico de pagos ( ej: mercadopago)
+   * */
   async setPending(id_payment: number): Promise<Payment | ErrorPayment> {
     try {
       numberparce.parse({ number: id_payment });

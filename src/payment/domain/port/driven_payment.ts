@@ -29,6 +29,11 @@ interface driverPayment {
   updateStatus(status: Status, id_payment: number): Promise<Payment | false>;
   updateAll(paymentObj: Payment): Promise<Payment | false>;
   updateShipping(shipping: boolean, id: number): Promise<Payment | false>;
+  /**
+  * setear un pago como pendiente
+  * se usa luego de que el pago ya se mando
+  * a la empresa que lo gestiona
+  */
   setPending(id_payment: number): Promise<Payment | false>;
 }
 //-----------------------

@@ -6,13 +6,10 @@ declare global {
       NEON_URL: string;
       SECRET: string;
       SECRET_ADMIN: string;
-      AUTH_GOOGLE_ID: string;
-      AUTH_GOOGLE_SECRET: string;
-      RESEND_EMAIL: string;
-      MAIL_BUSINESS: string;
-      DOMAIN: string;
-      SECRET_PAGE_PASS: string;
       TOKEN_SECRET: string;
+      MP_ACCESS_TOKEN: string;
+      MP_SECRET_KEY: string;
+      MP_SECRET_KEY: string;
     }
   }
 }

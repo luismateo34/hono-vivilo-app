@@ -10,6 +10,11 @@ import { ZodError } from "zod";
 
 export class ApprovePaymentAdapter implements ApprovePayment {
   constructor(private readonly dataqueryPayment: dataqueryPayment) {}
+  /**
+  *  aprobar un pago como rcibido por
+  *   la empresa que gestiona los pagos
+  *   ej: mercadopago
+  * */
   async approve(id_payment: number): Promise<Payment | ErrorPayment> {
     try {
       numberparce.parse({ number: id_payment });

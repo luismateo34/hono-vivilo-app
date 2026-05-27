@@ -2,7 +2,7 @@ import { FacedePaymentAdapter } from "src/payment/application/adapterDriver/adap
 import { databasePayment } from "./database";
 
 const database = new databasePayment();
-export const facade = new FacedePaymentAdapter(database);
+export const ServicePayment = new FacedePaymentAdapter(database);
 export {
  type  Payment,
   ErrorPayment,

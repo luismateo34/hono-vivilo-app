@@ -27,3 +27,7 @@ export class ErrorProduct{
     return this.message
   }
 }
+export  interface productPaymet{
+   cuantityPay: number,
+   product: Product
+}
