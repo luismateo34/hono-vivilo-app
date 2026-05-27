@@ -25,6 +25,9 @@ export interface product_payment {
   imagesurl: string[];
   categoryproduct: string;
 }
+/**
+*  objeto con el id del producto, nombe del producto y el total de ventas
+*/
 export interface product_sell {
   id: number;
   name: string;

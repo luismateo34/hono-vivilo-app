@@ -1,20 +1,15 @@
 import { PaymentSchema } from "src/payment/infrastructure/paymentSchema";
 import { Op, fn, col } from "sequelize";
-import {
-  product_sell,
-} from "src/payment/domain/payment";
+import { product_sell } from "src/payment/domain/payment";
 import { Productschema } from "src/product/infrastructure/schema";
 //------------------------------
-//-----------------------------------
-interface ObjProduct extends Productschema {
-  totalproduct: number;
-}
 //--------------------------------
 export const GroupBy = async (
   init: Date,
   final: Date,
 ): Promise<product_sell[] | null> => {
   try {
+    //----------------
     const resp = await PaymentSchema.findAll({
       attributes: [],
       //raw: true,
@@ -38,16 +33,34 @@ export const GroupBy = async (
         },
       },
     });
+    //--------------------
     const arr = resp.map((el) => {
-      const { products } = el;
-      const productObj = products as ObjProduct;
-      const resp = {
-        id: productObj.productId,
-        name: productObj.name,
-	total_ventas: productObj.totalproduct,
-      } as product_sell;
-      return resp;
+      const objSell = el.products
+        .map((el) => {
+          const sell: product_sell = {
+            id: el.productId,
+            name: el.name,
+            total_ventas: 1,
+          };
+          return sell;
+        })
+        .reduce(
+          (acc, el) => {
+            const obj: product_sell = {
+              ...acc,
+              // Mantenemos los datos base del primer elemento que encuentre
+              id: acc.id || el.id,
+              name: acc.name || el.name,
+              // Sumamos las ventas al acumulado anterior
+              total_ventas: acc.total_ventas + el.total_ventas,
+            };
+            return obj;
+          },
+          { id: 0, name: "", total_ventas: 0 },
+        );
+      return objSell;
     });
+
     return arr;
   } catch {
     return null;
