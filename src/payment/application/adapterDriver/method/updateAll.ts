@@ -1,5 +1,5 @@
 import { ErrorPayment, Payment } from "src/payment/domain/payment";
-import { UpdatePayment } from "src/payment/domain/port/diver";
+import { UpdatePayment } from "src/payment/domain/port/driver";
 import { dataqueryPayment } from "src/payment/domain/port/driven_payment";
 import { paymentFilter,  updateShippingFilter } from "src/payment/application/filter";
 import { ZodError } from "zod";

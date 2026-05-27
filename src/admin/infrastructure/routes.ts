@@ -45,7 +45,7 @@ AdminRoutes.post(
 );
 //---------------------------------
 AdminRoutes.get(
-  "/find_byId",
+  "/find_byId/:id",
   jwt({
     secret: process.env.SECRET_ADMIN,
     alg: "HS256",

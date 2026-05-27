@@ -8,6 +8,8 @@ import { ProductRoutes } from "src/product/infrastructure/routes";
 import { AdminRoutes } from "src/admin/infrastructure/routes";
 import { CashRoutes } from "src/cash/infrastructure/routes";
 import { mercadopagowebhook, PaymentRoutes } from "src/payment/infrastructure/routes";
+import { PaymentAdminRoutes } from "src/payment/infrastructure/adminRoutes";
+import { PaymentUserRoutes } from "src/payment/infrastructure/userRoutes";
 
 const app = new Hono()
 
@@ -19,4 +21,6 @@ app.route("/", AdminRoutes)
 app.route("/", CashRoutes)
 app.route("/", mercadopagowebhook)
 app.route("/", PaymentRoutes)
+app.route("/", PaymentAdminRoutes)
+app.route("/", PaymentUserRoutes)
 export default app

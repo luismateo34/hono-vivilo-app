@@ -3,7 +3,7 @@ import {
   ErrorPayment,
   Status,
 } from "src/payment/domain/payment";
-import { ApprovePayment } from "src/payment/domain/port/diver";
+import { ApprovePayment } from "src/payment/domain/port/driver";
 import { dataqueryPayment } from "src/payment/domain/port/driven_payment";
 import { numberparce } from "src/payment/application/filter";
 import { ZodError } from "zod";

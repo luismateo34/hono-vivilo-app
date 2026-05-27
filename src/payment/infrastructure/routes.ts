@@ -25,7 +25,7 @@ export const PaymentRoutes = new Hono<{ Variables: VariablesUser }>().basePath(
 );
 //----user-access
 PaymentRoutes.post(
-  "registerDB",
+  "/registerDB",
   jwt({
     secret: process.env.SECRET,
     alg: "HS256",
@@ -51,7 +51,7 @@ PaymentRoutes.post(
  * usas su ID para el pago en mercado pago
  * */
 PaymentRoutes.post(
-  "MercadoPagoPay",
+  "/MercadoPagoPay",
   jwt({
     secret: process.env.SECRET,
     alg: "HS256",
@@ -85,7 +85,7 @@ PaymentRoutes.post(
  */
 export const mercadopagowebhook = new Hono().basePath("/webhookMP");
 mercadopagowebhook.post(
-  "mercadopago",
+  "/mercadopago/:id",
   zValidator("json", paymentWebhook),
   async (c) => {
     try {

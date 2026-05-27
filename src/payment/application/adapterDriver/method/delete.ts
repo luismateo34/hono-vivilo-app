@@ -1,7 +1,7 @@
 import {
   ErrorPayment,
 } from "src/payment/domain/payment";
-import { deletePayment } from "src/payment/domain/port/diver";
+import { deletePayment } from "src/payment/domain/port/driver";
 import { dataqueryPayment } from "src/payment/domain/port/driven_payment";
 import { numberparce } from "src/payment/application/filter";
 import { ZodError } from "zod";

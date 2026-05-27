@@ -33,8 +33,8 @@ CashRoutes.get(
     cookie: adminCookies.adminCookie,
   }),
   async (c) => {
-    const date_str = c.req.param("date") as string;
-    const currencyParam = c.req.param("currency") as Currency;
+    const date_str = c.req.query("date") as string;
+    const currencyParam = c.req.query("currency") as Currency;
     //-------------
     if (date_str === undefined) {
       return c.json(
@@ -61,9 +61,9 @@ CashRoutes.get(
     cookie: adminCookies.adminCookie,
   }),
   async (c) => {
-    const initdate_str = c.req.param("date") as string;
-    const finaldate_str = c.req.param("date") as string;
-    const currencyParam = c.req.param("currency") as Currency;
+    const initdate_str = c.req.query("date") as string;
+    const finaldate_str = c.req.query("date") as string;
+    const currencyParam = c.req.query("currency") as Currency;
     //-------------
     if (initdate_str === undefined || finaldate_str === undefined) {
       return c.json(

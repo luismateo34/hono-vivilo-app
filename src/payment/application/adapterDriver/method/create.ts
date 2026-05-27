@@ -3,7 +3,7 @@ import {
   ErrorPayment,
   paymentCreate,
 } from "src/payment/domain/payment";
-import { createPayment } from "src/payment/domain/port/diver";
+import { createPayment } from "src/payment/domain/port/driver";
 import { dataqueryPayment } from "src/payment/domain/port/driven_payment";
 import {
   CreatePaymentFilter,

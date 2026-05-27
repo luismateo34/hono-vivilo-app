@@ -29,7 +29,7 @@ export const ProductRoutes = new Hono<{ Variables: Variables }>().basePath(
 
 //---delete---
 ProductRoutes.delete(
-  "delete",
+  "/delete/:id",
   jwt({
     secret: process.env.SECRET_ADMIN,
     alg: "HS256",
@@ -51,7 +51,7 @@ ProductRoutes.delete(
   },
 );
 //-----get--acceso--libre
-ProductRoutes.get("/find_byId", async (c) => {
+ProductRoutes.get("/find_byId/:id", async (c) => {
   try {
     const id = c.req.param("id");
     if (id === undefined) {

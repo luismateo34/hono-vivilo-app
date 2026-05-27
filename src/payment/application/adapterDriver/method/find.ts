@@ -5,7 +5,7 @@ import {
   Status,
   product_sell,
 } from "src/payment/domain/payment";
-import { findPayment, Sells_list } from "src/payment/domain/port/diver";
+import { findPayment, Sells_list } from "src/payment/domain/port/driver";
 import { dataqueryPayment } from "src/payment/domain/port/driven_payment";
 import {
   numberparce,

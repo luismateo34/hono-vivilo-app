@@ -27,7 +27,7 @@ export const UserAdminRoutes = new Hono<{ Variables: Variables }>().basePath(
   "/user/admin",
 );
 UserAdminRoutes.post(
-  "create",
+  "/create",
   jwt({
     secret: process.env.SECRET_ADMIN,
     alg: "HS256",
@@ -48,7 +48,7 @@ UserAdminRoutes.post(
   },
 );
 UserAdminRoutes.delete(
-  "/deleteUser",
+  "/deleteUser/:id",
    jwt({
     secret: process.env.SECRET_ADMIN,
     alg: "HS256",
@@ -153,10 +153,10 @@ UserAdminRoutes.put(
 );
 //---get---
 UserAdminRoutes.get(
-  "/findUserByUser",
+  "/findPaymentUser/:id",
   async (c) => {
     try {
-      const id = c.req.query("id");
+      const id = c.req.param("id");
       if (id === undefined) {
         return c.json({ message: "mail no puede ser undefined" }, 400);
       }
@@ -173,10 +173,10 @@ UserAdminRoutes.get(
 
 //-------------------------
 UserAdminRoutes.get(
-  "/findUserById",
+  "/findUserById/:id",
   async (c) => {
     try {
-      const id = c.req.query("id");
+      const id = c.req.param("id");
       if (id === undefined) {
         return c.json({ message: "mail no puede ser undefined" }, 400);
       }

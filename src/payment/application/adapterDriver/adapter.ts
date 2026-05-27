@@ -4,7 +4,7 @@ import { FindpaymentAdapter } from "./method/find";
 import { CreatePaymentAdapter } from "./method/create";
 import { DeletePaymentDriver } from "./method/delete";
 import { UpdateAllAdapter } from "./method/updateAll";
-import { facedePayment } from "src/payment/domain/port/diver";
+import { facedePayment } from "src/payment/domain/port/driver";
 import { Payment, ErrorPayment, Status, paymentCreate, product_payment, product_sell } from "src/payment/domain/payment";
 
 //----------------------------------------

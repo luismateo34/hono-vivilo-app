@@ -27,7 +27,7 @@ export const UserRoutes = new Hono<{ Variables: Variables }>().basePath(
 );
 //----delete---
 UserRoutes.delete(
-  "/deleteUser",
+  "/deleteUser/:id",
   jwt({
     secret: process.env.SECRET,
     alg: "HS256",
@@ -161,7 +161,7 @@ UserRoutes.put(
 );
 //---get---
 UserRoutes.get(
-  "/findUserByUser",
+  "/findPaymentUserbyId/:id",
   jwt({
     secret: process.env.SECRET,
     alg: "HS256",
@@ -169,7 +169,7 @@ UserRoutes.get(
   }),
   async (c) => {
     try {
-      const id = c.req.query("id");
+      const id = c.req.param("id");
       if (id === undefined) {
         return c.json({ message: "mail no puede ser undefined" }, 400);
       }
@@ -186,7 +186,7 @@ UserRoutes.get(
 
 //-------------------------
 UserRoutes.get(
-  "/findUserById",
+  "/findUserById/:id",
   jwt({
     secret: process.env.SECRET,
     alg: "HS256",
@@ -194,7 +194,7 @@ UserRoutes.get(
   }),
   async (c) => {
     try {
-      const id = c.req.query("id");
+      const id = c.req.param("id");
       if (id === undefined) {
         return c.json({ message: "mail no puede ser undefined" }, 400);
       }
