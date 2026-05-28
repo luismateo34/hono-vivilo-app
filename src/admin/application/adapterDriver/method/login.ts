@@ -13,7 +13,7 @@ export class LoginAdapter implements Loggin {
         admin.name,
         admin.email,
       );
-      if (adminObj === null) {
+      if (adminObj?.email !== admin.email) {
         return null;
       }
       const hashPass = await comparePassword(

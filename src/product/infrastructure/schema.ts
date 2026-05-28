@@ -1,4 +1,4 @@
-import { seqlize } from "src/database";
+import { seqlize  } from "src/database";
 import {
   Table,
   Column,
@@ -10,6 +10,7 @@ import {
 import { Product_to_payments } from "src/product_to_payment";
 import { PaymentSchema } from "src/payment/infrastructure/paymentSchema";
 import { Product, Category } from "src/product/domain/product";
+
 
 @Table({ tableName: "Products" })
 export class Productschema extends Model implements Product {

@@ -23,8 +23,12 @@ export class PaymentSchema extends Model implements PaymentModel {
   date!: Date;
   //-----------
   @PrimaryKey
-  @Column({ type: DataType.STRING, allowNull: false, unique:true })
-  id_payment!: string;
+  @Column({
+    allowNull:true,
+    autoIncrement:true,
+    type:DataType.INTEGER
+  })
+  id_payment!: number;
   //-----------
   //-----------
   @Column({ type: DataType.BOOLEAN })

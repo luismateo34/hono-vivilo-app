@@ -2,8 +2,11 @@ declare global {
   namespace NodeJS {
     interface ProcessEnv {
       DB_ENVIROMENT: "SERVER" | "CLOUD";
-      POSTGRES_URL: string;
-      NEON_URL: string;
+      DATABASE_URL_HOST: string;
+      DATABASE_URL_PORT: string;
+      DATABASE_NAME: string;
+      DATABASE_USER_DEFAULT:string;
+      DATABASE_PASSWORD_DEFAULT: string;
       SECRET: string;
       SECRET_ADMIN: string;
       TOKEN_SECRET: string;

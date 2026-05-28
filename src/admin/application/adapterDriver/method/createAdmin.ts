@@ -11,7 +11,7 @@ export class CreateAdminAdapter implements CreateAdmin {
       createfilter.parse(admin);
       //----si existe un admin con el mail-------------------------
       const isExist = await this.databaseAdminQuery.findbyEmail(admin.email);
-      if (isExist !== null) {
+      if (isExist?.email === admin.email) {
         return null;
       }
       //-----------------------------|

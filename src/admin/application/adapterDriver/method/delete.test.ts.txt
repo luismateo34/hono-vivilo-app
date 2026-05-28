@@ -1,0 +1,17 @@
+import { describe, test, expect } from "vitest";
+import { adminQueryMock } from "./mock/mockdqo";
+import { DeleteAdminAdapter } from "./deleteAdmin";
+
+const objMock = new adminQueryMock();
+const createadmin = new DeleteAdminAdapter(objMock);
+//-----------
+describe("delete admin", () => {
+  test("delete admin", async () => {
+    const deleted = await createadmin.deleteAdmin(1);
+    expect(deleted).toBe(true);
+  });
+  test("delete admin is not exist", async () => {
+    const deleted = await createadmin.deleteAdmin(22);
+    expect(deleted).toBe(false);
+  });
+});

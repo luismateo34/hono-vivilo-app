@@ -14,7 +14,10 @@ export interface createPayment {
 //---------------------------
 export interface UpdatePayment {
   updateAll(paymentObj: Payment): Promise<Payment | ErrorPayment>;
-  updateShipping(shipping: boolean, id:number): Promise<Payment | ErrorPayment>;
+  updateShipping(
+    shipping: boolean,
+    id: number,
+  ): Promise<Payment | ErrorPayment>;
 }
 export interface ApprovePayment {
   approve(id_payment: number): Promise<Payment | ErrorPayment>;
@@ -25,7 +28,11 @@ export interface findPayment {
   //------------------
   findby_User_id(id_user: number): Promise<Payment[] | ErrorPayment>;
   //------------------
-  findbyStatus(status: Status): Promise<Payment[] | ErrorPayment>;
+  findbyStatus(
+    status: Status,
+    initdate: Date,
+    finishdate: Date,
+  ): Promise<Payment[] | ErrorPayment>;
   //------------------
   //------------------
   findby_Range_Date(
@@ -48,16 +55,19 @@ export interface findPayment {
   ): Promise<Payment[] | ErrorPayment>;
   //------------------
   findProducts_byId(
-    id_payment: number,
+    id_payments: number[],
   ): Promise<product_payment[] | ErrorPayment>;
 }
 //------------------------------
-export interface Sells_list{
-Product_sells_list(init_time:Date, final_time:Date):Promise<product_sell[] | ErrorPayment>
+export interface Sells_list {
+  Product_sells_list(
+    init_time: Date,
+    final_time: Date,
+  ): Promise<product_sell[] | ErrorPayment>;
 }
 //------------------------------
 export interface deletePayment {
-  delete(id_payment: number): Promise<true | ErrorPayment>;
+  delete(id_payments: number[]): Promise<true | ErrorPayment>;
 }
 //------------------------------
 export interface facedePayment

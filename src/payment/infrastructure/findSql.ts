@@ -313,10 +313,14 @@ export class FindPayment implements findSql {
     }
   }
   //------------------
-  async findProducts(id_payment: number): Promise<product_payment[] | null> {
+  async findProducts(id_payments: number[]): Promise<product_payment[] | null> {
     try {
-      const resp = await PaymentSchema.findOne({
-        where: { PaymentId: id_payment },
+      const resp = await PaymentSchema.findAll({
+        where: {
+          id_payment: {
+            [Op.in]: id_payments,
+          },
+        },
         include: {
           model: Productschema,
           required: true,
@@ -325,18 +329,21 @@ export class FindPayment implements findSql {
       if (resp === null) {
         return null;
       }
-      const Objresp = resp.products.map((el) => {
-        const products_pay: product_payment = {
-          categoryproduct: el.categoryproduct,
-          description: el.description,
-          quantity: el.quantity,
-          imagesurl: el.imagesUrl,
-          productid: el.productId,
-          name: el.name,
-        };
-        return products_pay;
-      });
-      return Objresp;
+      const objResp = resp
+        .map((el) => el.products)
+        .flat()
+        .map((el) => {
+          const products_pay: product_payment = {
+            categoryproduct: el.categoryproduct,
+            description: el.description,
+            quantity: el.quantity,
+            imagesurl: el.imagesUrl,
+            productid: el.productId,
+            name: el.name,
+          };
+          return products_pay;
+        });
+      return objResp;
     } catch (e) {
       const err = e as Error;
       const logs = pino().child({
@@ -347,10 +354,17 @@ export class FindPayment implements findSql {
     }
   }
   //------------------
-  async getbyStatus(status: Status): Promise<Payment[] | null> {
+  async getbyStatus(
+    status: Status,
+    initdate: Date,
+    finishdate: Date,
+  ): Promise<Payment[] | null> {
     try {
       const resp = await PaymentSchema.findAll({
-        where: { status: status },
+        where: {
+          status: status,
+          date: { [Op.between]: [initdate, finishdate] },
+        },
         include: { model: Productschema, required: true },
       });
       if (resp.length === 0) {

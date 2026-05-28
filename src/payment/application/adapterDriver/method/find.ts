@@ -14,6 +14,7 @@ import {
   emailparse,
   nameparce,
   booleanParce,
+  IdArray
 } from "src/payment/application/filter";
 import { ZodError } from "zod";
 
@@ -105,25 +106,23 @@ export class FindpaymentAdapter implements findPayment, Sells_list {
     }
   }
   //----------------------------
-  async findProducts_byId(
-    id_payment: number,
-  ): Promise<product_payment[] | ErrorPayment> {
-    try {
-      numberparce.parse({ number: id_payment });
-      const resp = await this.dataqueryPayment.findProducts(id_payment);
+  async findProducts_byId(id_payments: number[]): Promise<product_payment[] | ErrorPayment> {
+     try {
+      IdArray.parse({ idPayments : id_payments });
+      const resp = await this.dataqueryPayment.findProducts(id_payments);
       if (resp === null) {
-        throw new Error(" no existen productos para el pago");
+	throw new Error(" no existen productos para el pago");
       }
       return resp;
     } catch (e) {
       if (e instanceof ZodError) {
-        return new ErrorPayment("parametro invalido");
+	return new ErrorPayment("parametro invalido");
       }
       const err = e as Error;
       return new ErrorPayment(err.message ?? "error al obtener los pagos");
     }
   }
-  //---------------------------
+    //---------------------------
   async findAll_by_UserName(
     name: string,
     email: string,
@@ -180,20 +179,20 @@ export class FindpaymentAdapter implements findPayment, Sells_list {
     }
   }
   //----------------
-  async findbyStatus(status: Status): Promise<Payment[] | ErrorPayment> {
-    try {
+  async findbyStatus(status: Status, initdate: Date, finishdate: Date): Promise<Payment[] | ErrorPayment> {
+     try {
       statusparce.parse({ status });
-      const resp = await this.dataqueryPayment.getbyStatus(status);
+      const resp = await this.dataqueryPayment.getbyStatus(status, initdate, finishdate);
       if (resp === null) {
-        throw new Error("error al obtener los pagos");
+	throw new Error("error al obtener los pagos");
       }
       return resp;
     } catch (e) {
       if (e instanceof ZodError) {
-        return new ErrorPayment("parametro invalido");
+	return new ErrorPayment("parametro invalido");
       }
       const err = e as Error;
       return new ErrorPayment(err.message ?? "error al obtener los pagos");
     }
   }
-}
+  }

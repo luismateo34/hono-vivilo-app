@@ -97,12 +97,12 @@ mercadopagowebhook.post(
         xRequest === undefined ||
         id === undefined
       ) {
-        return c.json({ message: "id es undefined" }, 403);
+        return c.json({ message: "id es undefined" }, 400);
       }
       //--------------------------
       const access = webhook(xSignature, xRequest, id);
       if (!access) {
-        return c.json({ message: "forbiden" }, 403);
+        return c.json({ message: "forbiden" }, 400);
       }
       //-------------------------
       const { data } = c.req.valid("json");
@@ -111,16 +111,12 @@ mercadopagowebhook.post(
         parseInt(register.metadata.text),
       );
       if (obj instanceof ErrorPayment) {
-        return c.json({ message: "error" }, 403);
+        return c.json({ message: "error" }, 400);
       }
       //-----------------------------
       return c.json({ message: "success" }, 201);
     } catch {
-      return c.json({ message: "error" }, 403);
+      return c.json({ message: "error" }, 400);
     }
   },
 );
-//----user-access
-//----admin-access
-
-//-----web-hook

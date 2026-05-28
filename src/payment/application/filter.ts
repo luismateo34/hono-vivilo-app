@@ -19,6 +19,9 @@ export const statusparce = z.object({
 export const booleanParce = z.object({
   shipping: z.boolean(),
 });
+export const IdArray = z.object({
+   idPayments: z.array(z.number()).min(1)
+})
 /*
 interface createPayment {
   amount: number;

@@ -1,13 +1,6 @@
 import { Hono } from "hono";
-import { zValidator } from "@hono/zod-validator";
 import { jwt } from "hono/jwt";
-import { JwtUser, UserCookies } from "src/user/infrastructure/userservice";
-import {
-  ErrorUser,
-  UserService,
-  createUser,
-} from "src/user/infrastructure/userservice";
-import { createUserfilter } from "src/user/application/filter";
+import { UserCookies } from "src/user/infrastructure/userservice";
 import {
   ServicePayment,
   ErrorPayment,
@@ -143,7 +136,7 @@ PaymentAdminRoutes.get(
   },
 );
 PaymentAdminRoutes.get(
-  "/findProducts_byId/:id",
+  "/findProducts_byId",
   jwt({
     secret: process.env.SECRET,
     alg: "HS256",
@@ -152,12 +145,12 @@ PaymentAdminRoutes.get(
   async (c) => {
     try {
       //----------
-      const id = c.req.param("id");
-      const idNumber = parseInt(id)
-      if ( isNaN(idNumber) ){
+      const ids = c.req.queries("ids");
+      if ( ids === undefined ) {
       return c.json({ message: "id debe ser un numero" }, 400);
       }
-      const register = await ServicePayment.findProducts_byId(idNumber);
+      const idNumbers = ids.map((id) => parseInt(id));
+      const register = await ServicePayment.findProducts_byId(idNumbers);
       if (register instanceof ErrorPayment) {
         return c.json({ message: register.messageError }, 400);
       }
@@ -178,7 +171,16 @@ PaymentAdminRoutes.get(
     try {
       //----------
       const status = c.req.query("status");
-      const register = await ServicePayment.findbyStatus(status as Status);
+      const initdate = c.req.query("initdate");
+      const finaldate = c.req.query("finaldate");
+      if ( initdate === undefined || finaldate === undefined ){
+        return c.json({ message: "fechas incorrectas" }, 400);
+      }
+      //--------------------
+      const dateinit = new Date(initdate);
+      const datefinal = new Date(finaldate);
+      const register = await ServicePayment.findbyStatus(status as Status, dateinit, datefinal);
+      //----------------
       if (register instanceof ErrorPayment) {
         return c.json({ message: register.messageError }, 400);
       }
@@ -246,7 +248,7 @@ PaymentAdminRoutes.get(
 );
 
 PaymentAdminRoutes.get(
-  "/delete/:id",
+  "/delete",
   jwt({
     secret: process.env.SECRET,
     alg: "HS256",
@@ -255,15 +257,15 @@ PaymentAdminRoutes.get(
   async (c) => {
     try {
       //----------
-      const id = c.req.param("id");
-      const idNumber = parseInt(id)
+      const ids = c.req.queries("id");
       //-------------------
       if (
-        isNaN(idNumber)
+        ids === undefined
       ) {
         return c.json({ message: "id deve ser un numero" }, 200);
       }
-      const register = await ServicePayment.delete(idNumber);
+      const arrayId = ids.map((id) => parseInt(id));
+      const register = await ServicePayment.delete(arrayId);
       if (register instanceof ErrorPayment) {
         return c.json({ message: register.messageError }, 400);
       }

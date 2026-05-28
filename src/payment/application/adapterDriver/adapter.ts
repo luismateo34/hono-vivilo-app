@@ -48,8 +48,8 @@ export class FacedePaymentAdapter implements facedePayment {
      return this.classFind.findbyShipping(shipping)
   }
   //------------------------------------------
-  async findProducts_byId(id_payment: number): Promise<product_payment[] | ErrorPayment> {
-      return this.classFind.findProducts_byId(id_payment)
+  async findProducts_byId(id_payments: number[]): Promise<product_payment[] | ErrorPayment> {
+      return this.classFind.findProducts_byId(id_payments)
   }
   //------------------------------------------
   async approve(id_payment: number): Promise<Payment | ErrorPayment> {
@@ -60,8 +60,8 @@ export class FacedePaymentAdapter implements facedePayment {
     return this.classCreate.create(paymentObj);
   }
   //----------------------------------------
-  async delete(id_payment: number): Promise<true | ErrorPayment> {
-    return this.classDelete.delete(id_payment);
+  delete(id_payments: number[]): Promise<true | ErrorPayment> {
+    return this.classDelete.delete(id_payments);
   }
   //----------------------------------------
   async findAll_by_UserName(
@@ -84,7 +84,7 @@ export class FacedePaymentAdapter implements facedePayment {
     return this.classUpdate.updateAll(paymentObj);
   }
   //----------------------------------------
-  async findbyStatus(status: Status): Promise<Payment[] | ErrorPayment> {
-    return this.classFind.findbyStatus(status);
+  async findbyStatus(status: Status, initdate: Date, finishdate: Date): Promise<Payment[] | ErrorPayment> {
+    return this.classFind.findbyStatus(status, initdate, finishdate);
   }
 }

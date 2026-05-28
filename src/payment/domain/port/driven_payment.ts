@@ -9,7 +9,12 @@ import type {
 interface getdrivenPayment {
   getbyId(id_payment: number): Promise<Payment | null>;
   getbyRangeDate(initdate: Date, finishdate: Date): Promise<Payment[] | null>;
-  getbyStatus(status: Status): Promise<Payment[] | null>;
+  getbyStatus(
+    status: Status,
+    initdate: Date,
+    finishdate: Date,
+  ): Promise<Payment[] | null>;
+  //------------
   getby_User_id(id_user: number): Promise<Payment[] | null>;
   getbyShipping(shipping: boolean): Promise<Payment[] | null>;
   getAll_by_UserName(name: string, email: string): Promise<Payment[] | null>;
@@ -19,21 +24,22 @@ interface getdrivenPayment {
     initdate: Date,
     finishdate: Date,
   ): Promise<Payment[] | null>;
-  sells_list(initdate: Date, finalDate:Date): Promise<product_sell[] | null>;
-  findProducts(id_payment: number): Promise<product_payment[] | null>;
+  //---------------
+  sells_list(initdate: Date, finalDate: Date): Promise<product_sell[] | null>;
+  findProducts(id_payments: number[]): Promise<product_payment[] | null>;
 }
 //-------------------
 interface driverPayment {
   create(paymentObj: paymentCreate): Promise<Payment | false>;
-  deletePayment(id_payment: number): Promise<boolean>;
+  deletePayment(id_payments: number[]): Promise<boolean>;
   updateStatus(status: Status, id_payment: number): Promise<Payment | false>;
   updateAll(paymentObj: Payment): Promise<Payment | false>;
   updateShipping(shipping: boolean, id: number): Promise<Payment | false>;
   /**
-  * setear un pago como pendiente
-  * se usa luego de que el pago ya se mando
-  * a la empresa que lo gestiona
-  */
+   * setear un pago como pendiente
+   * se usa luego de que el pago ya se mando
+   * a la empresa que lo gestiona
+   */
   setPending(id_payment: number): Promise<Payment | false>;
 }
 //-----------------------

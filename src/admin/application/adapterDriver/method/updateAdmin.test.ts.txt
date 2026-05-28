@@ -1,0 +1,42 @@
+import { expect, vi, describe, test, beforeEach } from "vitest";
+import {
+  adminQueryMock,
+  password,
+  emailTest,
+  nameTest
+} from "./mock/mockdqo";
+import { UpdateAdminAdapter } from "./updateAdmin";
+import { createAdmin, getAdmin } from "src/admin/domain/admin";
+
+const updateadminObj = new UpdateAdminAdapter(new adminQueryMock());
+//-----------
+beforeEach(() => {
+  vi.clearAllMocks();
+});
+
+describe("update admin", () => {
+  test("update admin", async () => {
+    const admin: createAdmin = {
+      email: emailTest,
+      name: nameTest,
+      password: password,
+    };
+    const objDTO: getAdmin = {
+      Admin_id: 1,
+      email: admin.email,
+      name: admin.name,
+    };
+    const adminupdate = await updateadminObj.update(1, admin);
+    expect(adminupdate).toEqual(objDTO);
+  });
+  test("update admin, failed", async () => {
+    const admin: createAdmin = {
+      email: emailTest,
+      name: nameTest,
+      password: password,
+    };
+    const adminupdate = await updateadminObj.update(4, admin);
+    expect(adminupdate).toBeNull();
+  });
+
+});

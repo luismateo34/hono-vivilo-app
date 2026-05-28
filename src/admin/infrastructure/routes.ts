@@ -60,11 +60,11 @@ AdminRoutes.get(
       const numID = parseInt(id);
       const resp = await AdminService.find_byId(numID);
       if (!resp) {
-        return c.json({ message: "no se pudo borrar el admin" }, 400);
+        return c.json({ message: "no se pudo buscar el admin" }, 400);
       }
       return c.json({ message: "ok" }, 200);
     } catch {
-      return c.json({ message: "no se pudo borrar el admin" }, 403);
+      return c.json({ message: "no se pudo buscar el admin" }, 403);
     }
   },
 );
@@ -84,11 +84,11 @@ AdminRoutes.get(
       }
       const resp = await AdminService.find_byEmail(email);
       if (!resp) {
-        return c.json({ message: "no se pudo borrar el admin" }, 400);
+        return c.json({ message: "no se pudo encontrar el admin" }, 400);
       }
       return c.json({ message: "ok" }, 200);
     } catch {
-      return c.json({ message: "no se pudo borrar el admin" }, 403);
+      return c.json({ message: "no se encontrar el admin" }, 400);
     }
   },
 );
@@ -149,7 +149,7 @@ AdminRoutes.post("/login", zValidator("json", CreateAdmin), async (c) => {
   try {
     const resp = await AdminService.login(admin);
     if (resp === null) {
-      return c.json({ message: "no se pudo crear el admin" }, 400);
+      return c.json({ message: "no se pudo logear el admin" }, 400);
     }
     const jwt = await generateToken(resp.Admin_id, resp.name);
     const refreshToken = await generateRefreshToken(resp.Admin_id, resp.name);

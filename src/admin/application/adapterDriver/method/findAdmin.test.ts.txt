@@ -1,0 +1,47 @@
+import { expect, describe, test, vi, beforeEach } from "vitest";
+import { adminQueryMock, emailTest, nameTest } from "./mock/mockdqo";
+import { FindAdminAdapter } from "./FindAdmin";
+import { createAdmin, getAdmin } from "src/admin/domain/admin";
+
+const findadmin = new FindAdminAdapter(new adminQueryMock());
+//-----------
+beforeEach(() => {
+  vi.clearAllMocks();
+});
+describe("find admin", () => {
+  test("find admin by id, not nut", async () => {
+    const admincreate = await findadmin.find_byId(1);
+    expect(admincreate).not.toBeNull();
+  });
+  test("find admin by email, not null", async () => {
+    const admincreate = await findadmin.find_byEmail(emailTest);
+    expect(admincreate).not.toBeNull();
+  });
+  test("find admin by id", async () => {
+    const admincreate = await findadmin.find_byId(1);
+    const objDTO: getAdmin = {
+      Admin_id: 1,
+      email: emailTest,
+      name: nameTest,
+    };
+    expect(admincreate).toEqual(objDTO);
+  });
+  test("find admin by email", async () => {
+    const objDTO: getAdmin = {
+      Admin_id: 1,
+      email: emailTest,
+      name: nameTest,
+    };
+    const admincreate = await findadmin.find_byEmail(emailTest);
+    expect(admincreate).not.toEqual(objDTO);
+  });
+   test("find admin by id is not exist", async () => {
+    const admincreate = await findadmin.find_byId(4);
+    expect(admincreate).toBeNull();
+  });
+  test("find admin by email, not null", async () => {
+    const admincreate = await findadmin.find_byEmail("elagatogordo@panzamail.com");
+    expect(admincreate).toBeNull();
+  });
+
+});

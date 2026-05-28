@@ -1,0 +1,66 @@
+import { expect, vi, describe, test, beforeEach } from "vitest";
+import {
+  adminQueryMock,
+  password,
+  emailTest,
+} from "./mock/mockdqo";
+import { LoginAdapter } from "./login";
+import { createAdmin, getAdmin } from "src/admin/domain/admin";
+
+vi.mock("../../../../utils/criptUtils", () => ({
+  comparePassword: vi.fn(() => true),
+}));
+
+const objMock = new adminQueryMock();
+const adminlogin = new LoginAdapter(objMock);
+
+beforeEach(() => {
+  vi.clearAllMocks();
+});
+vi.mock("../../../../utils/criptUtils", () => ({
+  comparePassword: vi.fn(() => false),
+}));
+
+describe("login admin password incorrect", () => {
+    test("login admin failed", async () => {
+    const admin: createAdmin = {
+      email: "catTest@gatogordo.com",
+      name: "catTest",
+      password: "testPasswordmichi",
+    };
+
+    const login = await adminlogin.login(admin)
+    expect(login).toBeNull();
+  });
+});
+vi.clearAllMocks()
+vi.mock("../../../../utils/criptUtils", () => ({
+  comparePassword: vi.fn(() => true),
+}));
+
+describe("login admin", () => {
+  test("login admin", async () => {
+    const admin: createAdmin = {
+      email: emailTest,
+      name: "catTest",
+      password: password,
+    };
+    const objDTO: getAdmin = {
+      Admin_id: 1,
+      email: admin.email,
+      name: admin.name,
+    };
+    const login = await adminlogin.login(admin)
+    expect(login).toEqual(objDTO);
+  });
+  test("login admin failed", async () => {
+    const admin: createAdmin = {
+      email: "catTest@gatogordo.com",
+      name: "catTest",
+      password: password,
+    };
+
+    const login = await adminlogin.login(admin)
+    expect(login).toBeNull();
+  });
+});

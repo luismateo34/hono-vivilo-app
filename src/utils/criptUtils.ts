@@ -18,10 +18,10 @@ export async function hashPassword(password:string):Promise<string> {
 /**
  * Compara una contraseña en texto plano con el hash almacenado.
  * @param password contraseña en texto plano
- * @param storedValue  contraseña encriptada
+ * @param hashPassword  contraseña encriptada
  */
-export async function comparePassword(password:string, storedValue:string):Promise<boolean> {
-  const [salt, hash] = storedValue.split(':');
+export async function comparePassword(password:string, hashPassword:string):Promise<boolean> {
+  const [salt, hash] = hashPassword.split(':');
   const hashBuffer = Buffer.from(hash, 'hex');
   const derivedKey = await scryptAsync(password, salt, 64);
   const access = timingSafeEqual(hashBuffer, derivedKey)

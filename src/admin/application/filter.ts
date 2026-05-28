@@ -1,4 +1,5 @@
 import * as z from "zod";
+import type { createAdmin as CreateAdmintype, Admin } from "src/admin/domain/admin";
 
 //-------------------
 export const Password = z.object({
@@ -26,6 +27,8 @@ export const CreateAdmin = z.object({
   name: z.string().min(3),
   password: z.string().min(8),
 });
+type createAdminZodType = z.infer<typeof CreateAdmin>;
+export const __create_admin__: createAdminZodType = {}as CreateAdmintype
 //----------------
 export const UpdateAdmin = z.object({
   email: z.email(),

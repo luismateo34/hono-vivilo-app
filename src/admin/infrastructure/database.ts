@@ -6,9 +6,12 @@ import pino from "pino";
 export class Database implements databaseAdminQuery {
   async deleteAdminByID(admin_id: number): Promise<boolean> {
     try {
-      await Adminschema.destroy({
+     const resp =  await Adminschema.destroy({
         where: { Admin_id: admin_id },
       });
+      if (resp === 0 ){
+        throw new Error("error al eliminar el admin");
+      }
       return true;
     } catch (e) {
       const err = e as Error;

@@ -1,3 +1,4 @@
+import { Op } from "sequelize";
 import { dataqueryPayment } from "src/payment/domain/port/driven_payment";
 import { PaymentSchema } from "src/payment/infrastructure/paymentSchema";
 import { seqlize } from "src/database";
@@ -15,8 +16,8 @@ import { FindPayment } from "./findSql";
 export class databasePayment implements dataqueryPayment {
   private findSql = new FindPayment();
   //----------------------------
-  async findProducts(id_payment: number): Promise<product_payment[] | null> {
-    return this.findSql.findProducts(id_payment);
+  async findProducts(id_payments: number[]): Promise<product_payment[] | null> {
+    return this.findSql.findProducts(id_payments);
   }
   //---------------------------
   async getAll_by_UserName(
@@ -59,8 +60,12 @@ export class databasePayment implements dataqueryPayment {
     return this.findSql.getbyShipping(shipping);
   }
   //---------------------------
-  async getbyStatus(status: Status): Promise<Payment[] | null> {
-    return this.findSql.getbyStatus(status);
+  async getbyStatus(
+    status: Status,
+    initdate: Date,
+    finishdate: Date,
+  ): Promise<Payment[] | null> {
+    return this.findSql.getbyStatus(status, initdate, finishdate);
   }
   //---------------------------
   async sells_list(
@@ -70,14 +75,19 @@ export class databasePayment implements dataqueryPayment {
     return this.findSql.sells_list(initdate, finalDate);
   }
   //----------------------------
-  async deletePayment(id_payment: number): Promise<boolean> {
+  async deletePayment(id_payments: number[]): Promise<boolean> {
     try {
-      await PaymentSchema.destroy({ where: { id_payment: id_payment } });
+      const resp = await PaymentSchema.destroy({
+        where: { id: { [Op.in]: id_payments } },
+      });
+      if (resp !== id_payments.length) {
+        throw new Error("error al eliminar todos los payments");
+      }
       return true;
     } catch (e) {
       const err = e as Error;
       const logs = pino().child({ location: "deletePayment" });
-      logs.info(err.message ?? "error al eliminar payment");
+      logs.info(err.message ?? "error al eliminar payments");
       return false;
     }
   }
@@ -146,9 +156,9 @@ export class databasePayment implements dataqueryPayment {
   //------------------
   async setPending(id_payment: number): Promise<Payment | false> {
     try {
-      const isExist =  await this.getbyId(id_payment)
-      if ( isExist !== null ) {
-           return false
+      const isExist = await this.getbyId(id_payment);
+      if (isExist !== null) {
+        return false;
       }
       //-------------------------------
       const result = await PaymentSchema.update(

@@ -8,7 +8,7 @@ export enum Status {
 export interface Payment {
   amount: number;
   date: Date;
-  id_payment: string;
+  id_payment: number;
   user_id: number;
   user_email: string;
   user_name: string;

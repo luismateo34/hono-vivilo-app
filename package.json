@@ -4,7 +4,11 @@
   "imports": {
     "src/*": "./src/*"
   },
+  "scripts": {
+    "test": "vitest"
+  },
   "dependencies": {
+    "@hono/zod-openapi": "^1.4.0",
     "@hono/zod-validator": "0.7.6",
     "hono": "^4.12.14",
     "mercadopago": "3.0.0",
@@ -21,6 +25,8 @@
     "@types/pg": "8.20.0",
     "@types/validator": "13.15.10",
     "tsx": "^4.7.1",
-    "typescript": "^5.8.3"
+    "typescript": "^5.8.3",
+    "vite-tsconfig-paths": "6.1.1",
+    "vitest": "4.1.7"
   }
 }

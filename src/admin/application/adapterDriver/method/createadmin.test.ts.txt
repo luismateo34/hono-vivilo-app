@@ -1,0 +1,48 @@
+import {  expect, vi, describe, test } from "vitest";
+import { adminQueryMock, password, emailTest, emailExistTest } from "./mock/mockdqo";
+import { CreateAdminAdapter } from "./createAdmin";
+import {  createAdmin, getAdmin } from "src/admin/domain/admin";
+
+vi.mock("../../../../utils/criptUtils", () => ({
+  hashPassword: vi.fn(() => "catPassword"),
+}));
+
+const objMock = new adminQueryMock();
+const createadmin = new CreateAdminAdapter(objMock);
+//-----------
+describe("create admin", () => {
+  test("create admin", async () => {
+    const admin: createAdmin = {
+      email: emailTest,
+      name: "catTest",
+      password: password,
+    };
+    const objDTO: getAdmin = {
+      Admin_id: 1,
+      email: admin.email,
+      name: admin.name,
+    };
+
+    const admincreate = await createadmin.createAdmin(admin);
+    expect(admincreate).toEqual(objDTO);
+  });
+  test("create admin with existing email", async () => {
+    const admin: createAdmin = {
+      email: emailExistTest,
+      name: "catTest",
+      password: password,
+    };
+    const admincreate = await createadmin.createAdmin(admin);
+    expect(admincreate).toBeNull();
+  })
+test("create admin with dto invalid", async () => {
+    const admin = {
+      email: "",
+      name: "",
+      password: "",
+    } as createAdmin
+    const admincreate = await createadmin.createAdmin(admin);
+    expect(admincreate).toBeNull();
+  })
+
+});
