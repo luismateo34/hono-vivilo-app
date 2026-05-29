@@ -1,6 +1,12 @@
 import { MercadoPagoConfig, Preference, Payment } from "mercadopago";
 import { Items } from "mercadopago/dist/clients/commonTypes";
 import { productPaymet } from "src/product/domain/product";
+import { loadEnvFile } from "node:process";
+try{
+loadEnvFile("./.env");
+}catch{
+  console.info(" serverles environment file not found")
+}
 
 class MercadoPagoObject {
   static instance: MercadoPagoObject;

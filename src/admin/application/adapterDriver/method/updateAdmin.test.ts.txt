@@ -10,11 +10,12 @@ import { createAdmin, getAdmin } from "src/admin/domain/admin";
 
 const updateadminObj = new UpdateAdminAdapter(new adminQueryMock());
 //-----------
-beforeEach(() => {
-  vi.clearAllMocks();
-});
 
 describe("update admin", () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
+
   test("update admin", async () => {
     const admin: createAdmin = {
       email: emailTest,

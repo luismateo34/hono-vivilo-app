@@ -7,21 +7,19 @@ import {
 import { LoginAdapter } from "./login";
 import { createAdmin, getAdmin } from "src/admin/domain/admin";
 
-vi.mock("../../../../utils/criptUtils", () => ({
-  comparePassword: vi.fn(() => true),
-}));
 
 const objMock = new adminQueryMock();
 const adminlogin = new LoginAdapter(objMock);
 
-beforeEach(() => {
-  vi.clearAllMocks();
-});
 vi.mock("../../../../utils/criptUtils", () => ({
   comparePassword: vi.fn(() => false),
 }));
 
 describe("login admin password incorrect", () => {
+    beforeEach(() => {
+      vi.clearAllMocks();
+    });
+
     test("login admin failed", async () => {
     const admin: createAdmin = {
       email: "catTest@gatogordo.com",
@@ -33,12 +31,17 @@ describe("login admin password incorrect", () => {
     expect(login).toBeNull();
   });
 });
+//----------------
 vi.clearAllMocks()
 vi.mock("../../../../utils/criptUtils", () => ({
   comparePassword: vi.fn(() => true),
 }));
 
 describe("login admin", () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
+
   test("login admin", async () => {
     const admin: createAdmin = {
       email: emailTest,

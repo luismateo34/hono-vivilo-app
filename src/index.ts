@@ -1,4 +1,3 @@
-import  "src/utils/dotenv";
 //-----------------------
 import { Hono } from 'hono'
 import { prettyJSON } from 'hono/pretty-json'

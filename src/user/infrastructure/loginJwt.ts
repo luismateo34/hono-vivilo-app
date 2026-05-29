@@ -1,6 +1,12 @@
 import { JwtUser } from "src/user/application/types/jwt";
 import { UserService, ErrorUser } from "src/user/infrastructure/userservice";
 import { sign } from "hono/jwt";
+import { loadEnvFile } from "node:process";
+try{
+loadEnvFile("./.env");
+}catch{
+  console.info(" serverles environment file not found")
+}
 
 const generateToken = async (userId: number, name: string) => {
   const payloadObj: JwtUser = {

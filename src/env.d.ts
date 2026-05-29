@@ -9,6 +9,7 @@ declare global {
       DATABASE_PASSWORD_DEFAULT: string;
       SECRET: string;
       SECRET_ADMIN: string;
+      NODE_ENV:"development" | "test" | "production";
       TOKEN_SECRET: string;
       MP_ACCESS_TOKEN: string;
       MP_SECRET_KEY: string;

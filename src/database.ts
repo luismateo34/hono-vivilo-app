@@ -1,6 +1,13 @@
 import { ModelCtor, Sequelize } from "sequelize-typescript";
 import { Options } from "sequelize";
 import pg from "pg";
+import { loadEnvFile } from "node:process";
+try{
+loadEnvFile("./.env");
+}catch{
+  console.info("serverles environment file not found");
+}
+
 
 const BASE_OPTIONS: Options = {
   host: process.env.DATABASE_URL_HOST,

@@ -5,10 +5,11 @@ import { createAdmin, getAdmin } from "src/admin/domain/admin";
 
 const findadmin = new FindAdminAdapter(new adminQueryMock());
 //-----------
-beforeEach(() => {
-  vi.clearAllMocks();
-});
 describe("find admin", () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
+
   test("find admin by id, not nut", async () => {
     const admincreate = await findadmin.find_byId(1);
     expect(admincreate).not.toBeNull();

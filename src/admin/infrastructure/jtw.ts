@@ -1,5 +1,11 @@
 import { sign } from "hono/jwt";
 import { jwtAdminPayload } from "./Adminservice";
+import { loadEnvFile } from "node:process";
+try{
+loadEnvFile("./.env");
+}catch{
+  console.info(" serverles environment file not found")
+}
 
 export const generateToken = async (adminId: number, name: string) => {
   const payloadObj: jwtAdminPayload = {

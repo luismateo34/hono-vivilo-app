@@ -1,4 +1,10 @@
 import { createHmac } from "node:crypto";
+import { loadEnvFile } from "node:process";
+try{
+loadEnvFile("./.env");
+}catch{
+  console.info("serverles environment file not found" )
+}
 
 /**
 *@param xSignature string  - headers['x-signature']
