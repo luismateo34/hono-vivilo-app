@@ -9,7 +9,7 @@ import {
 } from "sequelize-typescript";
 import { Product_to_payments } from "src/product_to_payment";
 import { PaymentSchema } from "src/payment/infrastructure/paymentSchema";
-import { Product, Category } from "src/product/domain/product";
+import { Product, Category, SoftDelete } from "src/product/domain/product";
 
 
 @Table({ tableName: "Products" })
@@ -19,6 +19,12 @@ export class Productschema extends Model implements Product {
     allowNull: false,
   })
   categoryproduct!: Category;
+  //--------------------
+  @Column({
+ type: DataType.ENUM(...Object.values(SoftDelete)),
+    allowNull: false,
+  })
+  SoftDelete!: SoftDelete;
   //--------------------
   @Column({
     type: DataType.STRING,

@@ -1,4 +1,4 @@
-import { Category, productPaymet, Product } from "src/product/domain/product";
+import { Category, productPaymet, Product, SoftDelete } from "src/product/domain/product";
 import * as z from "zod";
 
 export const productFilter = z.object({
@@ -10,11 +10,12 @@ export const productFilter = z.object({
   categoryproduct: z.enum(Category),
   offert: z.boolean(),
   offertPercent: z.number().nonnegative().max(100).min(0),
+  SoftDelete: z.enum(SoftDelete),
 });
 
 type InferredProductFilter = z.infer<typeof productFilter>;
 type create = Omit<Product, "productId">
-export const _reverseAssertionFilter: InferredProductFilter = {} as create;
+export const _reverseAssertionFilter: create = {} as InferredProductFilter;
 //----------
 /*
  export  interface productPaymet{
@@ -24,7 +25,7 @@ export const _reverseAssertionFilter: InferredProductFilter = {} as create;
  */
 export const PaymentProductFilter = z.object({
   cuantityPay: z.number().nonnegative(),
-   product: z.object({
+  product: z.object({
   productId: z.number().nonnegative(),
   name: z.string().min(3),
   description: z.string().min(3),
@@ -34,10 +35,39 @@ export const PaymentProductFilter = z.object({
   categoryproduct: z.enum(Category),
   offert: z.boolean(),
   offertPercent: z.number().nonnegative().max(100).min(0),
+  SoftDelete: z.enum(SoftDelete),
 })
 })
 type InferredProduct = z.infer<typeof PaymentProductFilter>;
-export const _reverseAssertion: InferredProduct = {} as productPaymet;
+export const _reverseAssertion: productPaymet = {} as InferredProduct;
+//----------
+/*
+  name: string;
+  description: string;
+  price: number;
+  quantity: number;
+  imagesUrl:string[];
+  categoryproduct: Category;
+  offert: boolean;
+  offertPercent: number;
+  productId: number;
+
+ */
+export const updateProductFilter = z.object({
+  name: z.string().min(3),
+  description: z.string().min(3),
+  price: z.number().nonnegative(),
+  quantity: z.number().nonnegative(),
+  imagesUrl: z.array(z.string()),
+  categoryproduct: z.enum(Category),
+  offert: z.boolean(),
+  offertPercent: z.number().nonnegative().max(100).min(0),
+  productId: z.number().nonnegative(),
+  SoftDelete: z.enum(SoftDelete),
+});
+type InferredUpdateProduct = z.infer<typeof updateProductFilter>;
+export const _updateProdAssertion: InferredUpdateProduct = {} as Product;
+
 //----------
 export const ArrPaymentProductfilter = z.object({
   arr: z.array(PaymentProductFilter),
@@ -80,29 +110,6 @@ export const offertPercentfilter = z.object({
   offertPercent: z.number().nonnegative().max(100).min(0),
 });
 
-//----------
-/*
-  name: string;
-  description: string;
-  price: number;
-  quantity: number;
-  imagesUrl:string[];
-  categoryproduct: Category;
-  offert: boolean;
-  offertPercent: number;
-  productId: number;
- */
-export const updateProductFilter = z.object({
-  name: z.string().min(3),
-  description: z.string().min(3),
-  price: z.number().nonnegative(),
-  quantity: z.number().nonnegative(),
-  imagesUrl: z.string().array(),
-  categoryproduct: z.enum(Category),
-  offert: z.boolean(),
-  offertPercent: z.number().nonnegative().max(100).min(0),
-  productId: z.number().nonnegative(),
-});
 //----------
 export const changecuantityFilter = z.object({
   productId: z.number().min(0).nonnegative(),

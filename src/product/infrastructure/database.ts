@@ -3,6 +3,7 @@ import {
   createProduct,
   Product,
   Category,
+  SoftDelete,
 } from "src/product/domain/product";
 import { Op } from "sequelize";
 import pino from "pino";
@@ -32,6 +33,7 @@ export class ProductDatabase implements dataqueryProduct {
         price: eschemaUpdate.price,
         productId: eschemaUpdate.productId,
         quantity: eschemaUpdate.quantity,
+        SoftDelete: eschemaUpdate.SoftDelete,
       };
       return productObj;
     } catch (e) {
@@ -65,6 +67,7 @@ export class ProductDatabase implements dataqueryProduct {
         price: eschemaUpdate.price,
         productId: eschemaUpdate.productId,
         quantity: eschemaUpdate.quantity,
+        SoftDelete: eschemaUpdate.SoftDelete,
       };
       return productObj;
     } catch (e) {
@@ -98,6 +101,7 @@ export class ProductDatabase implements dataqueryProduct {
         price: eschemaUpdate.price,
         productId: eschemaUpdate.productId,
         quantity: eschemaUpdate.quantity,
+        SoftDelete: eschemaUpdate.SoftDelete,
       };
       return productObj;
     } catch (e) {
@@ -132,6 +136,7 @@ export class ProductDatabase implements dataqueryProduct {
         price: eschemaUpdate.price,
         productId: eschemaUpdate.productId,
         quantity: eschemaUpdate.quantity,
+        SoftDelete: eschemaUpdate.SoftDelete,
       };
       return productObj;
     } catch (e) {
@@ -158,6 +163,7 @@ export class ProductDatabase implements dataqueryProduct {
         price,
         productId,
         quantity,
+        SoftDelete,
       } = resp;
       const ProductObj: Product = {
         categoryproduct,
@@ -169,6 +175,7 @@ export class ProductDatabase implements dataqueryProduct {
         price,
         productId,
         quantity,
+        SoftDelete,
       };
       return ProductObj;
     } catch (e) {
@@ -181,11 +188,14 @@ export class ProductDatabase implements dataqueryProduct {
   //------------------------------------------
   async deleteProduct(productId: number): Promise<boolean> {
     try {
-      await Productschema.destroy({
-        where: {
-          productId: productId,
-        },
-      });
+      const resp = await Productschema.update(
+        { SoftDelete },
+        { where: { productId: productId }, returning: true },
+      );
+      if (resp[1].length === 0) {
+        return false;
+      }
+
       return true;
     } catch (e) {
       const err = e as Error;
@@ -224,6 +234,7 @@ export class ProductDatabase implements dataqueryProduct {
           price,
           productId,
           quantity,
+          SoftDelete,
         } = el;
         const obj: Product = {
           categoryproduct,
@@ -235,6 +246,7 @@ export class ProductDatabase implements dataqueryProduct {
           price,
           productId,
           quantity,
+          SoftDelete,
         };
         return obj;
       });
@@ -265,6 +277,7 @@ export class ProductDatabase implements dataqueryProduct {
         price: resp.price,
         productId: resp.productId,
         quantity: resp.quantity,
+        SoftDelete: resp.SoftDelete,
       };
       return ProductObj;
     } catch (e) {
@@ -293,6 +306,7 @@ export class ProductDatabase implements dataqueryProduct {
         price: resp.price,
         productId: resp.productId,
         quantity: resp.quantity,
+        SoftDelete: resp.SoftDelete,
       };
       return ProductObj;
     } catch (e) {
@@ -342,6 +356,7 @@ export class ProductDatabase implements dataqueryProduct {
           price,
           productId,
           quantity,
+          SoftDelete,
         } = el;
         const obj: Product = {
           categoryproduct,
@@ -353,6 +368,7 @@ export class ProductDatabase implements dataqueryProduct {
           price,
           productId,
           quantity,
+          SoftDelete,
         };
         return obj;
       });
@@ -401,6 +417,7 @@ export class ProductDatabase implements dataqueryProduct {
           price,
           productId,
           quantity,
+          SoftDelete,
         } = el;
         const obj: Product = {
           categoryproduct,
@@ -412,6 +429,7 @@ export class ProductDatabase implements dataqueryProduct {
           price,
           productId,
           quantity,
+          SoftDelete,
         };
         return obj;
       });
@@ -447,6 +465,7 @@ export class ProductDatabase implements dataqueryProduct {
         price: schemaUpdate.price,
         productId: schemaUpdate.productId,
         quantity: schemaUpdate.quantity,
+        SoftDelete: schemaUpdate.SoftDelete,
       };
       return ProductObject;
     } catch (e) {

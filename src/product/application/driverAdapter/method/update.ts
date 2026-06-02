@@ -3,11 +3,12 @@ import { dataqueryProduct } from "src/product/domain/port/driven_product";
 import { ErrorProduct, Product } from "src/product/domain/product";
 import {
   numberfilter,
-  updateProductFilter,
   offertPercentfilter,
   changecuantityFilter,
   changePriceFilter,
-  changeImage
+  changeImage,
+  PaymentProductFilter,
+  updateProductFilter
 } from "src/product/application/filter";
 
 //----------------------------------------

@@ -6,6 +6,10 @@ export enum Category{
   BUZOS="buzos",
   OTROS="otros",
 }
+export enum SoftDelete {
+ NO_DELETED = "NO_DELETED",
+ DELETED = "DELETED",
+}
 //-----------------------
 export interface Product{
   productId: number;
@@ -17,6 +21,7 @@ export interface Product{
   categoryproduct: Category;
   offert: boolean;
   offertPercent: number;
+  SoftDelete:SoftDelete;
 }
 //-----------------------
 export type createProduct = Omit<Product, 'productId'>
