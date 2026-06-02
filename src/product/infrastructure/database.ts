@@ -9,6 +9,7 @@ import { Op } from "sequelize";
 import pino from "pino";
 import { Productschema } from "src/product/infrastructure/schema";
 //-------------------------------------
+
 export class ProductDatabase implements dataqueryProduct {
   async changePrice(
     productId: number,
@@ -17,7 +18,7 @@ export class ProductDatabase implements dataqueryProduct {
     try {
       const resp = await Productschema.update(
         { price: price },
-        { where: { productId: productId }, returning: true },
+        { where: { productId: productId, SoftDelete: SoftDelete.NO_DELETED }, returning: true },
       );
       if (resp[1].length === 0) {
         return false;
@@ -51,7 +52,7 @@ export class ProductDatabase implements dataqueryProduct {
     try {
       const resp = await Productschema.update(
         { quantity: quantity },
-        { where: { productId: productId }, returning: true },
+        { where: { productId: productId, SoftDelete: SoftDelete.NO_DELETED }, returning: true },
       );
       if (resp[1].length === 0) {
         return false;
@@ -85,7 +86,7 @@ export class ProductDatabase implements dataqueryProduct {
     try {
       const resp = await Productschema.update(
         { imagesUrl: imageArr },
-        { where: { productId: productId }, returning: true },
+        { where: { productId: productId, SoftDelete: SoftDelete.NO_DELETED }, returning: true },
       );
       if (resp[1].length === 0) {
         return false;
@@ -120,7 +121,7 @@ export class ProductDatabase implements dataqueryProduct {
     try {
       const resp = await Productschema.update(
         { offert: offert, offertPercent: offertPercent },
-        { where: { productId: productId }, returning: true },
+        { where: { productId: productId, SoftDelete: SoftDelete.NO_DELETED }, returning: true },
       );
       if (resp[1].length === 0) {
         return false;
@@ -149,33 +150,26 @@ export class ProductDatabase implements dataqueryProduct {
   //---------------------------------
   async createProduct(productObj: createProduct): Promise<Product | false> {
     try {
-      const resp = await Productschema.create(productObj, { returning: true });
+      const create: createProduct = {
+        ...productObj,
+        SoftDelete: SoftDelete.NO_DELETED,
+      };
+      const resp = await Productschema.create(create, { returning: true });
       if (resp === null) {
         return false;
       }
-      const {
-        categoryproduct,
-        description,
-        imagesUrl,
-        name,
-        offert,
-        offertPercent,
-        price,
-        productId,
-        quantity,
-        SoftDelete,
-      } = resp;
+
       const ProductObj: Product = {
-        categoryproduct,
-        description,
-        imagesUrl,
-        name,
-        offert,
-        offertPercent,
-        price,
-        productId,
-        quantity,
-        SoftDelete,
+        categoryproduct: resp.categoryproduct,
+        description: resp.description,
+        imagesUrl: resp.imagesUrl,
+        name: resp.name,
+        offert: resp.offert,
+        offertPercent: resp.offertPercent,
+        price: resp.price,
+        productId: resp.productId,
+        quantity: resp.quantity,
+        SoftDelete: resp.SoftDelete,
       };
       return ProductObj;
     } catch (e) {
@@ -189,7 +183,7 @@ export class ProductDatabase implements dataqueryProduct {
   async deleteProduct(productId: number): Promise<boolean> {
     try {
       const resp = await Productschema.update(
-        { SoftDelete },
+        { SoftDelete: SoftDelete.DELETED },
         { where: { productId: productId }, returning: true },
       );
       if (resp[1].length === 0) {
@@ -213,10 +207,16 @@ export class ProductDatabase implements dataqueryProduct {
       const resp =
         row === undefined
           ? await Productschema.findAll({
-              where: { categoryproduct: category },
+              where: {
+                categoryproduct: category,
+                SoftDelete: SoftDelete.NO_DELETED,
+              },
             })
           : await Productschema.findAll({
-              where: { categoryproduct: category },
+              where: {
+                categoryproduct: category,
+                SoftDelete: SoftDelete.NO_DELETED,
+              },
               offset: (row - 1) * 10,
               limit: row * 10,
             });
@@ -262,7 +262,7 @@ export class ProductDatabase implements dataqueryProduct {
   async findby_id(productId: number): Promise<Product | null> {
     try {
       const resp = await Productschema.findOne({
-        where: { productId: productId },
+        where: { productId: productId, SoftDelete: SoftDelete.NO_DELETED},
       });
       if (resp === null) {
         return null;
@@ -291,7 +291,7 @@ export class ProductDatabase implements dataqueryProduct {
   async findby_name(name: string): Promise<Product | null> {
     try {
       const resp = await Productschema.findOne({
-        where: { name: name },
+        where: { name: name, SoftDelete: SoftDelete.NO_DELETED },
       });
       if (resp === null) {
         return null;
@@ -317,6 +317,35 @@ export class ProductDatabase implements dataqueryProduct {
     }
   }
   //--------------------------------
+  async findby_deleted(): Promise<Product[] | false> {
+    try {
+      const resp = await Productschema.findAll({
+        where: { SoftDelete: SoftDelete.DELETED },
+      });
+      if (resp === null) {
+        return false;
+      }
+      const objresp = resp.map((el) => {
+        const obj: Product = {
+          categoryproduct: el.categoryproduct,
+          description: el.description,
+          imagesUrl: el.imagesUrl,
+          name: el.name,
+          offert: el.offert,
+          offertPercent: el.offertPercent,
+          price: el.price,
+          productId: el.productId,
+          quantity: el.quantity,
+          SoftDelete: el.SoftDelete,
+        };
+        return obj;
+      });
+      return objresp;
+    } catch {
+      return false;
+    }
+  }
+  //--------------------------------
   async findby_offert(
     category: Category | undefined,
     row: number | undefined,
@@ -325,12 +354,16 @@ export class ProductDatabase implements dataqueryProduct {
       let resp: Productschema[];
       if (category === undefined) {
         const schema = await Productschema.findAll({
-          where: { offert: true },
+          where: { offert: true, SoftDelete: SoftDelete.NO_DELETED },
         });
         resp = schema;
       } else if (row === undefined) {
         const schema = await Productschema.findAll({
-          where: { categoryproduct: category, offert: true },
+          where: {
+            categoryproduct: category,
+            offert: true,
+            SoftDelete: SoftDelete.NO_DELETED,
+          },
         });
         resp = schema;
       } else {
@@ -392,12 +425,14 @@ export class ProductDatabase implements dataqueryProduct {
           ? await Productschema.findAll({
               where: {
                 categoryproduct: Category,
+                softDelete: SoftDelete.NO_DELETED,
                 price: { [Op.between]: [initialPrice, finalPrice] },
               },
             })
           : await Productschema.findAll({
               where: {
                 categoryproduct: Category,
+                softDelete: SoftDelete.NO_DELETED,
                 price: { [Op.between]: [initialPrice, finalPrice] },
               },
               offset: (row - 1) * 10,
@@ -448,7 +483,7 @@ export class ProductDatabase implements dataqueryProduct {
   ): Promise<Product | false> {
     try {
       const resp = await Productschema.update(productObj, {
-        where: { productId: productId },
+        where: { productId: productId, softDelete: SoftDelete.NO_DELETED },
         returning: true,
       });
       if (resp[1].length === 0) {

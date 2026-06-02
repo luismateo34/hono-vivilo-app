@@ -4,6 +4,9 @@ export enum Status {
   REJECTED = "REJECTED",
   UNPAID = "UNPAID",
 }
+export enum SoftdeletePayment {
+
+}
 
 export interface Payment {
   amount: number;

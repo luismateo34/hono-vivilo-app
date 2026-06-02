@@ -14,6 +14,7 @@ interface getProduct {
     row?: number,
   ): Promise<Product[] | null>;
   findby_offert( category: Category | undefined , row:number | undefined): Promise<Product[] | null>;
+  findby_deleted():Promise<Product[] | false>;
 }
 //--------------------------------------------
 interface main {

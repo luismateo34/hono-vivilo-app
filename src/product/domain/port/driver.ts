@@ -11,6 +11,7 @@ export interface findProducts {
   findby_category(category: Category, row:number | undefined): Promise<Product[] | ErrorProduct>;
   findby_price_range(initialPrice: number, finalPrice: number, row:number | undefined): Promise<Product[] | ErrorProduct>;
   findby_offert( category: Category | undefined , row:number | undefined): Promise<Product[] | ErrorProduct>;
+  findby_deleted():Promise<Product[] | ErrorProduct>;
 }
 //-------------------------------
 export interface updateProduct {

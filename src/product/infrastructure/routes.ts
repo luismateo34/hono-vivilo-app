@@ -13,11 +13,7 @@ import {
   changeImage,
   changeOffertFilter,
 } from "src/product/application/filter";
-import {
-  Category,
-  ErrorProduct,
-  ProductAdapter,
-} from "./serviceProduct";
+import { Category, ErrorProduct, ProductAdapter } from "./serviceProduct";
 
 type Variables = {
   jwtPayload: jwtAdminPayload;
@@ -50,6 +46,26 @@ ProductRoutes.delete(
     }
   },
 );
+ProductRoutes.get(
+  "/findby_delete",
+  jwt({
+    secret: process.env.SECRET_ADMIN,
+    alg: "HS256",
+    cookie: adminCookies.adminCookie,
+  }),
+  async (c) => {
+    try {
+      const resp = await ProductAdapter.findby_deleted();
+      if (resp instanceof ErrorProduct) {
+        return c.json({ message: resp.messageError }, 400);
+      }
+      return c.json(resp, 400);
+    } catch {
+      return c.json({ message: "error" }, 400);
+    }
+  },
+);
+
 //-----get--acceso--libre
 ProductRoutes.get("/find_byId/:id", async (c) => {
   try {

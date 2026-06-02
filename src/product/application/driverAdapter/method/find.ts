@@ -15,6 +15,21 @@ import {
 //--------------------
 export class FinddriverAdapter implements findProducts {
   constructor(private readonly driven: dataqueryProduct) {}
+  async findby_deleted(): Promise<Product[] | ErrorProduct> {
+     try{
+      const resp = await this.driven.findby_deleted()
+      if (resp === false) {
+        throw new Error("productos no encontrados");
+      }
+      return resp
+     } catch(e){
+       const err = e as Error;
+       return new ErrorProduct(
+         err.message ?? "error al encontrar los productos borrados",
+        );
+     }
+  }
+  //--------------------------
   async findby_offert(
     category: Category | undefined,
     row: number | undefined,
