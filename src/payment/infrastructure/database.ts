@@ -9,6 +9,7 @@ import {
   paymentCreate,
   product_sell,
   PaymentDB,
+  SoftdeletePayment
 } from "src/payment/domain/payment";
 import pino from "pino";
 import { FindPayment } from "./findSql";
@@ -102,12 +103,19 @@ export class databasePayment implements dataqueryPayment {
         shipping: false,
         status: Status.UNPAID,
         user_id: paymentObj.user_id,
+	softdelete: SoftdeletePayment.NO_DELETED
       };
 
+      /**
+      * crea el registro en base de datos
+      */
       const respCreate = await PaymentSchema.create(paymentsDB, {
         returning: true,
         transaction,
       });
+      /**
+       setea el registro de la tabla payment
+       */
       await respCreate.$set("products", paymentObj.productsId, { transaction });
       await transaction.commit().then(() => {
         commited = true;
@@ -121,26 +129,17 @@ export class databasePayment implements dataqueryPayment {
         throw new Error("error al buscar el payment");
       }
       //-----------------
-      const {
-        status,
-        amount,
-        date,
-        id_payment,
-        shipping,
-        user_id,
-        user,
-        products,
-      } = resp;
       const obj: Payment = {
-        amount,
-        date,
-        id_payment,
-        shipping,
-        status,
-        user_email: user.email ?? "",
-        user_id,
-        user_name: user.name ?? "",
-        productsId: products.map((el) => el.productId),
+        amount: resp.amount,
+        date: resp.date,
+        id_payment: resp.id_payment,
+        shipping: resp.shipping,
+        status: resp.status,
+        user_email: resp.user.email ?? "",
+        user_id: resp.user_id,
+        user_name: resp.user.name ?? "",
+        productsId: resp.products.map((el) => el.productId),
+	softdelete: resp.softdelete,
       };
       return obj;
     } catch (e) {
@@ -176,6 +175,7 @@ export class databasePayment implements dataqueryPayment {
         user_id: resp.user_id,
         user_email: resp.user.email,
         user_name: resp.user.name,
+	softdelete: resp.softdelete,
       };
       return paymentObj;
     } catch (e) {
@@ -195,26 +195,18 @@ export class databasePayment implements dataqueryPayment {
         where: { id_payment: paymentObj.id_payment },
         returning: true,
       });
-      const {
-        status,
-        amount,
-        date,
-        id_payment,
-        shipping,
-        user_id,
-        user,
-        products,
-      } = resp[1][0];
+      const el = resp[1][0];
       const obj: Payment = {
-        amount,
-        date,
-        id_payment,
-        productsId: products.map((el) => el.productId),
-        shipping,
-        status,
-        user_email: user.email,
-        user_id,
-        user_name: user.name,
+        amount: el.amount,
+        date: el.date,
+        id_payment: el.id_payment,
+        productsId: el.products.map((el) => el.productId),
+        shipping: el.shipping,
+        status: el.status,
+        user_email: el.user.email,
+        user_id: el.user_id,
+        user_name: el.user.name,
+	softdelete: el.softdelete
       };
       return obj;
     } catch (e) {
@@ -248,6 +240,7 @@ export class databasePayment implements dataqueryPayment {
         user_id: resp.user_id,
         user_email: resp.user.email,
         user_name: resp.user.name,
+	softdelete: resp.softdelete,
       };
       return paymentObj;
     } catch (e) {
@@ -281,6 +274,7 @@ export class databasePayment implements dataqueryPayment {
         user_email: schema.user.email,
         user_id: schema.user_id,
         user_name: schema.user.name,
+	softdelete: schema.softdelete,
       };
       return obj;
     } catch (e) {

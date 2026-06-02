@@ -6,6 +6,7 @@ import {
   product_payment,
   Status,
   product_sell,
+  SoftdeletePayment
 } from "src/payment/domain/payment";
 import { Op } from "sequelize";
 import pino from "pino";
@@ -38,7 +39,7 @@ export class FindPayment implements findSql {
   async getby_User_id(id_user: number): Promise<Payment[] | null> {
     try {
       const resp = await PaymentSchema.findAll({
-        where: { user_id: id_user },
+        where: { user_id: id_user, softdelete: SoftdeletePayment.NO_DELETED },
         include: [
           { model: UserSchema, required: true },
           { model: Productschema, required: true },
@@ -48,26 +49,17 @@ export class FindPayment implements findSql {
         return null;
       }
       const ArrPayment = resp.map((el) => {
-        const {
-          status,
-          amount,
-          date,
-          id_payment,
-          shipping,
-          user_id,
-          user,
-          products,
-        } = el;
-        const obj: Payment = {
-          amount,
-          date,
-          id_payment,
-          productsId: products.map((el) => el.productId),
-          shipping,
-          status,
-          user_email: user.email,
-          user_id,
-          user_name: user.name,
+          const obj: Payment = {
+          amount: el.amount,
+          date: el.date,
+          id_payment: el.id_payment,
+          productsId: el.products.map((el) => el.productId),
+          shipping: el.shipping,
+          status: el.status,
+          user_email: el.user.email,
+          user_id: el.user_id,
+          user_name: el.user.name,
+	  softdelete: el.softdelete,
         };
         return obj;
       });
@@ -97,32 +89,23 @@ export class FindPayment implements findSql {
           },
           { model: Productschema, required: true },
         ],
-        where: { date: { [Op.between]: [initdate, finishdate] } },
+        where: { date: { [Op.between]: [initdate, finishdate] }, softdelete: SoftdeletePayment.NO_DELETED },
       });
       if (resp.length === 0) {
         return null;
       }
       const obj = resp.map((el) => {
-        const {
-          amount,
-          date,
-          id_payment,
-          user_id,
-          shipping,
-          status,
-          user,
-          products,
-        } = el;
-        const paymentObj: Payment = {
-          amount,
-          date,
-          id_payment,
-          productsId: products.map((el) => el.productId),
-          shipping,
-          status,
-          user_id,
-          user_email: user.email,
-          user_name: user.email,
+          const paymentObj: Payment = {
+          amount: el.amount ,
+          date: el.date,
+          id_payment: el.id_payment,
+          productsId: el.products.map((el) => el.productId),
+          shipping: el.shipping,
+          status: el.status,
+          user_id: el.user_id,
+          user_email: el.user.email,
+          user_name: el.user.email,
+	  softdelete: el.softdelete,
         };
         return paymentObj;
       });
@@ -143,33 +126,25 @@ export class FindPayment implements findSql {
   ): Promise<Payment[] | null> {
     try {
       const resp = await PaymentSchema.findAll({
-        where: { date: { [Op.between]: [initdate, finishdate] } },
+        where: { date: { [Op.between]: [initdate, finishdate] }, softdelete: SoftdeletePayment.NO_DELETED },
         include: { model: Productschema, required: true },
       });
       if (resp.length === 0) {
         return null;
       }
       const obj = resp.map((el) => {
-        const {
-          amount,
-          date,
-          id_payment,
-          user_id,
-          shipping,
-          status,
-          user,
-          products,
-        } = el;
+
         const paymentObj: Payment = {
-          amount,
-          date,
-          id_payment,
-          productsId: products.map((el) => el.productId),
-          shipping,
-          status,
-          user_id,
-          user_email: user.email,
-          user_name: user.email,
+          amount: el.amount,
+          date: el.date,
+          id_payment: el. id_payment,
+          productsId: el.products.map((el) => el.productId),
+          shipping: el.shipping,
+          status: el.status,
+          user_id: el.user_id,
+          user_email: el.user.email,
+          user_name: el.user.email,
+	  softdelete: el.softdelete
         };
         return paymentObj;
       });
@@ -185,7 +160,7 @@ export class FindPayment implements findSql {
   async getbyId(id_payment: number): Promise<Payment | null> {
     try {
       const resp = await PaymentSchema.findOne({
-        where: { id_payment: id_payment },
+        where: { id_payment: id_payment, softdelete: SoftdeletePayment.NO_DELETED },
         include: { model: Productschema, required: true },
       });
       if (resp === null) {
@@ -201,6 +176,7 @@ export class FindPayment implements findSql {
         user_id: resp.user_id,
         user_email: resp.user.email,
         user_name: resp.user.name,
+	softdelete: resp.softdelete
       };
       return paymentObj;
     } catch (e) {
@@ -219,7 +195,7 @@ export class FindPayment implements findSql {
       const resp = await PaymentSchema.findAll({
         include: [
           {
-            where: { name: name, email: email },
+            where: { name: name, email: email, softdelete: SoftdeletePayment.NO_DELETED },
           },
           { model: Productschema, required: true },
         ],
@@ -228,26 +204,17 @@ export class FindPayment implements findSql {
         return null;
       }
       const obj = resp.map((el) => {
-        const {
-          amount,
-          date,
-          id_payment,
-          user_id,
-          shipping,
-          status,
-          user,
-          products,
-        } = el;
         const paymentObj: Payment = {
-          amount,
-          date,
-          id_payment,
-          productsId: products.map((el) => el.productId),
-          shipping,
-          status,
-          user_id,
-          user_email: user.email,
-          user_name: user.email,
+          amount: el.amount,
+          date: el.date,
+          id_payment: el.id_payment,
+          productsId: el.products.map((el) => el.productId),
+          shipping: el.shipping,
+          status: el.status,
+          user_id: el.user_id,
+          user_email: el.user.email,
+          user_name: el.user.email,
+	  softdelete: el.softdelete,
         };
         return paymentObj;
       });
@@ -265,7 +232,7 @@ export class FindPayment implements findSql {
   async getbyShipping(shipping: boolean): Promise<Payment[] | null> {
     try {
       const resp = await PaymentSchema.findAll({
-        where: { shipping: shipping },
+        where: { shipping: shipping, softdelete: SoftdeletePayment.NO_DELETED },
         include: [
           {
             model: UserSchema,
@@ -279,26 +246,17 @@ export class FindPayment implements findSql {
         return null;
       }
       const obj = resp.map((el) => {
-        const {
-          amount,
-          date,
-          id_payment,
-          user_id,
-          shipping,
-          status,
-          user,
-          products,
-        } = el;
-        const paymentObj: Payment = {
-          amount,
-          date,
-          id_payment,
-          productsId: products.map((el) => el.productId),
-          shipping,
-          status,
-          user_id,
-          user_email: user.email,
-          user_name: user.email,
+                const paymentObj: Payment = {
+          amount: el.amount,
+          date: el.date,
+          id_payment: el.id_payment,
+          productsId: el.products.map((el) => el.productId),
+          shipping: el.shipping,
+          status: el.status,
+          user_id: el.user_id,
+          user_email: el.user.email,
+          user_name: el.user.email,
+	  softdelete: el.softdelete,
         };
         return paymentObj;
       });
@@ -320,6 +278,7 @@ export class FindPayment implements findSql {
           id_payment: {
             [Op.in]: id_payments,
           },
+	  softdelete: SoftdeletePayment.NO_DELETED
         },
         include: {
           model: Productschema,
@@ -363,6 +322,7 @@ export class FindPayment implements findSql {
       const resp = await PaymentSchema.findAll({
         where: {
           status: status,
+          softdelete: SoftdeletePayment.NO_DELETED,
           date: { [Op.between]: [initdate, finishdate] },
         },
         include: { model: Productschema, required: true },
@@ -381,6 +341,7 @@ export class FindPayment implements findSql {
           user_email: el.user.email,
           user_id: el.user_id,
           user_name: el.user.name,
+	  softdelete: el.softdelete,
         };
         return paymentObj;
       });

@@ -1,5 +1,5 @@
 import * as z from "zod";
-import { Status } from "src/payment/domain/payment";
+import { Status, SoftdeletePayment, Payment } from "src/payment/domain/payment";
 
 export const emailparse = z.object({
   email: z.email(),
@@ -51,6 +51,7 @@ export interface Payment {
   status: Status;
   productsId: number[];
   shipping: boolean;
+  softdelete: SoftdeletePayment;
 }
  */
 export const paymentFilter = z.object({
@@ -63,7 +64,12 @@ export const paymentFilter = z.object({
   productsId: z.array(z.number()),
   status: z.enum(Status),
   shipping: z.boolean(),
+  softdelete: z.enum(SoftdeletePayment),
 });
+type typePayment = z.infer<typeof paymentFilter>;
+export const __paymentFilter:Payment = {} as typePayment
+
+//--------------
 export const updateShippingFilter = z.object({
   shipping: z.boolean(),
   id: z.number().nonnegative(),

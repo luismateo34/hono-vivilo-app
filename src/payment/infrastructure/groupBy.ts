@@ -1,6 +1,6 @@
 import { PaymentSchema } from "src/payment/infrastructure/paymentSchema";
 import { Op, fn, col } from "sequelize";
-import { product_sell } from "src/payment/domain/payment";
+import { product_sell, SoftdeletePayment } from "src/payment/domain/payment";
 import { Productschema } from "src/product/infrastructure/schema";
 //------------------------------
 //--------------------------------
@@ -30,6 +30,7 @@ export const GroupBy = async (
       where: {
         date: {
           [Op.between]: [init.toString(), final.toString()],
+	  status: SoftdeletePayment.NO_DELETED
         },
       },
     });

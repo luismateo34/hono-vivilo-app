@@ -5,7 +5,8 @@ export enum Status {
   UNPAID = "UNPAID",
 }
 export enum SoftdeletePayment {
-
+       NO_DELETED = "NO_DELETED",
+       DELETED = "DELETED",
 }
 
 export interface Payment {
@@ -18,8 +19,19 @@ export interface Payment {
   status: Status;
   productsId: number[];
   shipping: boolean;
+  softdelete: SoftdeletePayment;
 }
+/**
+* modelo de la base de datos
+*/
 export type PaymentModel = Omit<Payment, "user_name" | "user_email" | "productsId">;
+/**
+ *objeot para crear la entidad directamente en BD
+ */
+export type PaymentDB = Omit<Payment, "id_payment"  | "user_name" | "user_email" | "productsId">;
+/**
+* productos de la base de datos relacionados con el pago
+*/
 export interface product_payment {
   productid: number;
   name: string;
@@ -36,10 +48,10 @@ export interface product_sell {
   name: string;
   total_ventas:number;
 }
-//-------------
-export type paymentCreate = Omit<Payment, "id_payment" | "status" | "shipping">;
-//-------------
-export type PaymentDB = Omit<Payment, "id_payment"  | "user_name" | "user_email" | "productsId">;
+/**
+ * payent
+ */
+export type paymentCreate = Omit<Payment, "id_payment" | "status" | "shipping" | "softdelete">;
 //--------------
 export class ErrorPayment {
   constructor(private message: string) {}

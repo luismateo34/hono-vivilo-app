@@ -8,7 +8,7 @@ import {
   BelongsTo,
   BelongsToMany,
 } from "sequelize-typescript";
-import { Status, PaymentModel } from "src/payment/domain/payment";
+import { Status, PaymentModel, SoftdeletePayment } from "src/payment/domain/payment";
 import { UserSchema } from "src/user/infrastructure/userSchema";
 import { Product_to_payments } from "src/product_to_payment";
 import { Productschema } from "src/product/infrastructure/schema";
@@ -18,6 +18,9 @@ import { seqlize } from "src/database";
 export class PaymentSchema extends Model implements PaymentModel {
   @Column({ type: DataType.INTEGER })
   amount!: number;
+  //-----------
+  @Column({ type: DataType.ENUM(...Object.values(SoftdeletePayment)), allowNull: false })
+  softdelete!: SoftdeletePayment;
   //-----------
   @Column({ type: DataType.DATEONLY })
   date!: Date;
